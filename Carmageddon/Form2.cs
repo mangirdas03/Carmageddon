@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static Carmageddon.Forms.Models.Car;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Carmageddon
@@ -236,24 +237,24 @@ namespace Carmageddon
 
         private void button1_Click(object sender, EventArgs e)
         {
-            var carCreator = new SmallCarCreator();
-            var car = carCreator.CreateCar();
+            var carCreator = new CarCreator();
+            var car = carCreator.CreateCar(CarSize.Small);
             (var health, var length) = car.GetInfo();
             label5.Text = "Car selected: " + health + " " + length; 
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            var carCreator = new MediumCarCreator();
-            var car = carCreator.CreateCar();
+            var carCreator = new CarCreator();
+            var car = carCreator.CreateCar(CarSize.Medium);
             (var health, var length) = car.GetInfo();
             label5.Text = "Car selected: " + health + " " + length;
         }
 
         private void button3_Click_1(object sender, EventArgs e)
         {
-            var carCreator = new BigCarCreator();
-            var car = carCreator.CreateCar();
+            var carCreator = new CarCreator();
+            var car = carCreator.CreateCar(CarSize.Big);
             (var health, var length) = car.GetInfo();
             label5.Text = "Car selected: " + health + " " + length;
         }
