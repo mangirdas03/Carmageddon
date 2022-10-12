@@ -1,7 +1,9 @@
-﻿namespace Carmageddon.API.Strategy
+﻿using Carmageddon.API.Models;
+
+namespace Carmageddon.API.Strategy
 {
     public interface IStrategy
     {
-        public void DoOperation();
+        public GameStatusModel DoOperation(GameStatusModel model);
     }
 }

@@ -20,5 +20,15 @@ namespace Carmageddon.API
         {
             return _players.Count;
         }
+
+        public static List<string> GetPlayerNames()
+        {
+            var names = new List<string>();
+            foreach (var player in _players)
+            {
+                names.Add(player.Username);
+            }
+            return names;
+        }
     }
 }

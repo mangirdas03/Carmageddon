@@ -19,17 +19,50 @@ namespace Carmageddon
 {
     public partial class Form2 : Form
     {
+        private HubConnection _conn;
         public Form2(HubConnection conn, Player player)
         {
-            TestConn(conn, player);
+            _conn = conn;
+            GetPlayerCount(conn, player);
+            GetBattleDuration(conn);
+            GetPlayerNames(conn);
             InitializeComponent();
         }
 
-        private async Task TestConn(HubConnection conn, Player player)
+        private async Task GetPlayerCount(HubConnection conn, Player player)
         {
-            await foreach (var date in conn.StreamAsync<int>("Streaming", player))
+            await foreach (var model in conn.StreamAsync<GameStatusModel>("GetPlayerCount", player))
             {
-                label2.Text = date.ToString();
+                label2.Text = model.PlayerCount.ToString();
+            }
+        }
+
+        private async Task GetBattleDuration(HubConnection conn)
+        {
+            await foreach (var model in conn.StreamAsync<GameStatusModel>("GetBattleDuration"))
+            {
+                label6.Text = "Battle duration: " + model.BattleDuration.ToLongTimeString();
+            }
+        }
+
+        private async Task GetTotalShots(HubConnection conn, bool playerShot)
+        {
+            await foreach (var model in conn.StreamAsync<GameStatusModel>("GetMovesCount", playerShot))
+            {
+                label7.Text = "Total shots: " + model.MovesCount.ToString();
+                break;
+            }
+        }
+
+        private async Task GetPlayerNames(HubConnection conn)
+        {
+            await foreach (var model in conn.StreamAsync<GameStatusModel>("GetPlayerNames"))
+            {
+                label8.Text = "Player names:\r\n"; 
+                foreach (var name in model.PlayerNames)
+                {
+                    label8.Text += name + "\r\n";
+                }
             }
         }
 
@@ -228,6 +261,7 @@ namespace Carmageddon
 
             label4.Text = "Enemy grid cell pressed: " + cellPressed;
             Debug.WriteLine("Enemy grid cell pressed: " + cellPressed);
+            GetTotalShots(_conn, true);
         }
 
         private void Form2_Load(object sender, EventArgs e)
