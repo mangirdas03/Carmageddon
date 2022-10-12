@@ -1,4 +1,5 @@
 ﻿using Carmageddon.Forms;
+using Carmageddon.Forms.AbstractFactory;
 using Carmageddon.Forms.Factory;
 using Carmageddon.Forms.Models;
 using Microsoft.AspNetCore.SignalR.Client;
@@ -20,6 +21,7 @@ namespace Carmageddon
     public partial class Form2 : Form
     {
         private HubConnection _conn;
+        private WeaponFactory _weaponFactory;
         public Form2(HubConnection conn, Player player)
         {
             _conn = conn;
@@ -291,6 +293,56 @@ namespace Carmageddon
             var car = carCreator.CreateCar(CarSize.Big);
             (var health, var length) = car.GetInfo();
             label5.Text = "Car selected: " + health + " " + length;
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            var random = new Random();
+            var option = random.Next(1, 4);
+            Cannon weapon;
+            switch (option)
+            {
+                case 1:
+                    _weaponFactory = new LowAmmoFactory();
+                    weapon = _weaponFactory.CreateCannon();
+                    label9.Text = "Cannon selected:\r\nShots left - " + weapon.ShotsLeft;
+                    break;
+                case 2:
+                    _weaponFactory = new MediumAmmoFactory();
+                    weapon = _weaponFactory.CreateCannon();
+                    label9.Text = "Cannon selected:\r\nShots left - " + weapon.ShotsLeft;
+                    break;
+                case 3:
+                    _weaponFactory = new HighAmmoFactory();
+                    weapon = _weaponFactory.CreateCannon();
+                    label9.Text = "Cannon selected:\r\nShots left - " + weapon.ShotsLeft;
+                    break;
+            }
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            var random = new Random();
+            var option = random.Next(1, 4);
+            MachineGun weapon;
+            switch (option)
+            {
+                case 1:
+                    _weaponFactory = new LowAmmoFactory();
+                    weapon = _weaponFactory.CreateMachineGun();
+                    label9.Text = "MG selected:\r\nShots left - " + weapon.ShotsLeft;
+                    break;
+                case 2:
+                    _weaponFactory = new MediumAmmoFactory();
+                    weapon = _weaponFactory.CreateMachineGun();
+                    label9.Text = "MG selected:\r\nShots left - " + weapon.ShotsLeft;
+                    break;
+                case 3:
+                    _weaponFactory = new HighAmmoFactory();
+                    weapon = _weaponFactory.CreateMachineGun();
+                    label9.Text = "MG selected:\r\nShots left - " + weapon.ShotsLeft;
+                    break;
+            }
         }
     }
 }
