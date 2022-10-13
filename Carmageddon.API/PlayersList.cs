@@ -30,5 +30,20 @@ namespace Carmageddon.API
             }
             return names;
         }
+
+        public static void AddPlayerCars(Player player, List<Car> cars)
+        {
+            if (!CheckIfExists(player))
+            {
+                return;
+            }
+            foreach (var user in _players)
+            {
+                if(user.Username == player.Username)
+                {
+                    user.Cars = cars;
+                }
+            }
+        }
     }
 }

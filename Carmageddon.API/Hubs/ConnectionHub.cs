@@ -69,5 +69,11 @@ namespace Carmageddon.API.Hubs
                 await Task.Delay(1000, cancellationToken);
             }
         }
+
+        public async Task SavePlayerCars(CancellationToken cancellationToken, string value)
+        {
+            var hehe = value;
+            await Task.Delay(1000, cancellationToken);
+        } 
     }
 }

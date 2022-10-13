@@ -10,13 +10,13 @@ namespace Carmageddon.Forms.Factory
             switch (carSize)
             {
                 case CarSize.Small:
-                    return new SmallCar(1, 1);
+                    return new SmallCar(1, 1, "small.png");
                 case CarSize.Medium:
-                    return new MediumCar(2, 2);
+                    return new MediumCar(2, 2, "medium.png");
                 case CarSize.Big:
-                    return new BigCar(3, 3);
+                    return new BigCar(3, 3, "big.png");
                 default:
-                    return new SmallCar(1, 1);
+                    return new SmallCar(1, 1, "small.png");
             }
         }
     }

@@ -11,10 +11,11 @@
 
         protected int Health { get; set; }
         protected int Length { get; set; }
+        protected string Image { get; set; }
 
-        public (int, int) GetInfo()
+        public (int, int, string) GetInfo()
         {
-            return (Health, Length);
+            return (Health, Length, Image);
         }
     }
 }

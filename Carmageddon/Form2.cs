@@ -21,13 +21,16 @@ namespace Carmageddon
     public partial class Form2 : Form
     {
         private HubConnection _conn;
+        private Player _player;
         private WeaponFactory _weaponFactory;
-        private string selectedCar = "";
+        private Car selectedCar;
         private Stack<Image> previousImages = new Stack<Image>();
+        private Stack<Car> _cars = new Stack<Car>();
         private bool rotate = false;
         public Form2(HubConnection conn, Player player)
         {
             _conn = conn;
+            _player = player;
             GetPlayerCount(conn, player);
             GetBattleDuration(conn);
             GetPlayerNames(conn);
@@ -69,6 +72,20 @@ namespace Carmageddon
                     label8.Text += name + "\r\n";
                 }
             }
+        }
+
+        private async Task SendCarsToApi(List<Car> cars)
+        {
+            try
+            {
+                await _conn.InvokeAsync("SavePlayerCars", "based");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                Debug.WriteLine(ex.StackTrace);
+            }
+            //await _conn.InvokeAsync("SavePlayerCars", "based");
         }
 
         //private void button1_Click(object sender, EventArgs e)
@@ -198,17 +215,21 @@ namespace Carmageddon
                     coordY = 0;
                     break;
             }
-            if (selectedCar != "")
+            if (selectedCar != null)
             {
+                _cars.Push(selectedCar);
+                (_, _, string image) = selectedCar.GetInfo();
                 Bitmap background = new Bitmap(pictureBox1.Image);
                 previousImages.Push(pictureBox1.Image);
-                string carpath = Directory.GetCurrentDirectory() + "\\Resources\\" + selectedCar;
+                string carpath = Directory.GetCurrentDirectory() + "\\Resources\\" + image;
                 Bitmap car = new Bitmap(Image.FromFile(carpath));
                 if (rotate)
                     car.RotateFlip(RotateFlipType.Rotate90FlipX);
                 Graphics carImage = Graphics.FromImage(background);
                 carImage.DrawImage(car, coordX, coordY);
                 pictureBox1.Image = background;
+                selectedCar = null;
+                label5.Text = "";
             }
 
             label3.Text = "Your grid cell pressed: " + cellPressed;
@@ -313,27 +334,27 @@ namespace Carmageddon
         {
             var carCreator = new CarCreator();
             var car = carCreator.CreateCar(CarSize.Small);
-            (var health, var length) = car.GetInfo();
+            (var health, var length, string image) = car.GetInfo();
             label5.Text = "Car selected: " + health + " " + length;
-            selectedCar = "small.png";
+            selectedCar = car;
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
             var carCreator = new CarCreator();
             var car = carCreator.CreateCar(CarSize.Medium);
-            (var health, var length) = car.GetInfo();
+            (var health, var length, string image) = car.GetInfo();
             label5.Text = "Car selected: " + health + " " + length;
-            selectedCar = "medium.png";
+            selectedCar = car;
         }
 
         private void button3_Click_1(object sender, EventArgs e)
         {
             var carCreator = new CarCreator();
             var car = carCreator.CreateCar(CarSize.Big);
-            (var health, var length) = car.GetInfo();
+            (var health, var length, string image) = car.GetInfo();
             label5.Text = "Car selected: " + health + " " + length;
-            selectedCar = "big.png";
+            selectedCar = car;
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -393,6 +414,7 @@ namespace Carmageddon
                 //var img = previousImages.Last();
                 //previousImages.RemoveAt(previousImages.Count - 1);
                 pictureBox1.Image = previousImages.Pop();
+                _cars.Pop();
             }
         }
 
@@ -402,6 +424,19 @@ namespace Carmageddon
                 rotate = true;
             else
                 rotate = false;
+        }
+
+        private async void button8_Click(object sender, EventArgs e)
+        {
+            button1.Visible = false;
+            button2.Visible = false;
+            button3.Visible = false;
+            button6.Visible = false;
+            button7.Visible = false;
+            button8.Visible = false;
+            var cars = _cars.ToList();
+            await SendCarsToApi(cars);
+            // send cars to backend
         }
     }
 }
