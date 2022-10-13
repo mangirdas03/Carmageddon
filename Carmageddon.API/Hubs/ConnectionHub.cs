@@ -1,6 +1,7 @@
 ﻿using Carmageddon.API.Models;
 using Carmageddon.API.Strategy;
 using Microsoft.AspNetCore.SignalR;
+using Newtonsoft.Json;
 
 namespace Carmageddon.API.Hubs
 {
@@ -70,10 +71,11 @@ namespace Carmageddon.API.Hubs
             }
         }
 
-        public async Task SavePlayerCars(CancellationToken cancellationToken, string value)
+        public void SavePlayerCars(Player player, string carsJson)
         {
-            var hehe = value;
-            await Task.Delay(1000, cancellationToken);
+            var cars = JsonConvert.DeserializeObject<List<Car>>(carsJson);
+
+            PlayersList.AddPlayerCars(player, cars);
         } 
     }
 }

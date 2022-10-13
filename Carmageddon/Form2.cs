@@ -3,6 +3,7 @@ using Carmageddon.Forms.AbstractFactory;
 using Carmageddon.Forms.Factory;
 using Carmageddon.Forms.Models;
 using Microsoft.AspNetCore.SignalR.Client;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -76,16 +77,8 @@ namespace Carmageddon
 
         private async Task SendCarsToApi(List<Car> cars)
         {
-            try
-            {
-                await _conn.InvokeAsync("SavePlayerCars", "based");
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-                Debug.WriteLine(ex.StackTrace);
-            }
-            //await _conn.InvokeAsync("SavePlayerCars", "based");
+            string json = JsonConvert.SerializeObject(cars);
+            await _conn.SendAsync("SavePlayerCars", _player, json);
         }
 
         //private void button1_Click(object sender, EventArgs e)
