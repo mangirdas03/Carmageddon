@@ -42,7 +42,7 @@ namespace Carmageddon
         {
             await foreach (var model in conn.StreamAsync<GameStatusModel>("GetPlayerCount", player))
             {
-                label2.Text = model.PlayerCount.ToString();
+                label2.Text = "Connected players: " + model.PlayerCount.ToString();
             }
         }
 
@@ -81,13 +81,6 @@ namespace Carmageddon
             await _conn.SendAsync("SavePlayerCars", _player, json);
         }
 
-        //private void button1_Click(object sender, EventArgs e)
-        //{
-        //    var x = button1.Tag;
-        //    var a = (sender as Button).Tag;
-        //    var hehe = "a1";
-        //}
-
         private void button3_Click(object sender, EventArgs e)
         {
 
@@ -116,47 +109,47 @@ namespace Carmageddon
             switch (coordX)
             {
                 case < 50:
-                    cellPressed += "a";
+                    cellPressed += "A";
                     coordX = 0;
                     break;
                 case < 100:
-                    cellPressed += "b";
+                    cellPressed += "B";
                     coordX = 50;
                     break;
                 case < 150:
-                    cellPressed += "c";
+                    cellPressed += "C";
                     coordX = 100;
                     break;
                 case < 200:
-                    cellPressed += "d";
+                    cellPressed += "D";
                     coordX = 150;
                     break;
                 case < 250:
-                    cellPressed += "e";
+                    cellPressed += "E";
                     coordX = 200;
                     break;
                 case < 300:
-                    cellPressed += "f";
+                    cellPressed += "F";
                     coordX = 250;
                     break;
                 case < 350:
-                    cellPressed += "g";
+                    cellPressed += "G";
                     coordX = 300;
                     break;
                 case < 400:
-                    cellPressed += "h";
+                    cellPressed += "H";
                     coordX = 350;
                     break;
                 case < 450:
-                    cellPressed += "i";
+                    cellPressed += "I";
                     coordX = 400;
                     break;
                 case < 501:
-                    cellPressed += "j";
+                    cellPressed += "J";
                     coordX = 450;
                     break;
                 default:
-                    cellPressed += "a";
+                    cellPressed += "A";
                     coordX = 0;
                     break;
             }
@@ -212,10 +205,18 @@ namespace Carmageddon
             {
                 _cars.Push(selectedCar);
                 (_, _, string image) = selectedCar.GetInfo();
-                Bitmap background = new Bitmap(pictureBox1.Image);
+                Image background;
+                using (var bmpTemp = new Bitmap(pictureBox1.Image))
+                {
+                    background = new Bitmap(bmpTemp);
+                }
                 previousImages.Push(pictureBox1.Image);
                 string carpath = Directory.GetCurrentDirectory() + "\\Resources\\" + image;
-                Bitmap car = new Bitmap(Image.FromFile(carpath));
+                Image car;
+                using (var bmpTemp = new Bitmap(carpath))
+                {
+                    car = new Bitmap(bmpTemp);
+                }
                 if (rotate)
                     car.RotateFlip(RotateFlipType.Rotate90FlipX);
                 Graphics carImage = Graphics.FromImage(background);
@@ -241,37 +242,37 @@ namespace Carmageddon
             switch (coordX)
             {
                 case < 50:
-                    cellPressed += "a";
+                    cellPressed += "A";
                     break;
                 case < 100:
-                    cellPressed += "b";
+                    cellPressed += "B";
                     break;
                 case < 150:
-                    cellPressed += "c";
+                    cellPressed += "C";
                     break;
                 case < 200:
-                    cellPressed += "d";
+                    cellPressed += "D";
                     break;
                 case < 250:
-                    cellPressed += "e";
+                    cellPressed += "E";
                     break;
                 case < 300:
-                    cellPressed += "f";
+                    cellPressed += "F";
                     break;
                 case < 350:
-                    cellPressed += "g";
+                    cellPressed += "G";
                     break;
                 case < 400:
-                    cellPressed += "h";
+                    cellPressed += "H";
                     break;
                 case < 450:
-                    cellPressed += "i";
+                    cellPressed += "I";
                     break;
                 case < 501:
-                    cellPressed += "j";
+                    cellPressed += "J";
                     break;
                 default:
-                    cellPressed += "a";
+                    cellPressed += "A";
                     break;
             }
 
@@ -319,7 +320,10 @@ namespace Carmageddon
 
         private void Form2_Load(object sender, EventArgs e)
         {
-            pictureBox1.Image = Image.FromFile(Directory.GetCurrentDirectory() + "\\Resources\\500x500.png");
+            using (var bmpTemp = new Bitmap(Directory.GetCurrentDirectory() + "\\Resources\\500x500.png"))
+            {
+                pictureBox1.Image = new Bitmap(bmpTemp);
+            }
 
         }
 
