@@ -27,5 +27,11 @@ namespace Carmageddon
             form.FormClosed += (s, args) => this.Close();
             form.Show();
         }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            var form = new Form3();
+            form.Show();
+        }
     }
 }
