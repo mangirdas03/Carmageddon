@@ -25,6 +25,13 @@ namespace Carmageddon
             var conn = test.GetInstance();
             var form = new Form2(conn, player);
             form.FormClosed += (s, args) => this.Close();
+            if (File.Exists(Directory.GetCurrentDirectory() + "\\Resources\\background.png"))
+            {
+                using (var bmpTemp = new Bitmap(Directory.GetCurrentDirectory() + "\\Resources\\background.png"))
+                {
+                    form.BackgroundImage = new Bitmap(bmpTemp);
+                }
+            }
             form.Show();
         }
 

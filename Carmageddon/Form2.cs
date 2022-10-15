@@ -323,8 +323,8 @@ namespace Carmageddon
             using (var bmpTemp = new Bitmap(Directory.GetCurrentDirectory() + "\\Resources\\500x500.png"))
             {
                 pictureBox1.Image = new Bitmap(bmpTemp);
+                pictureBox2.Image = new Bitmap(bmpTemp);
             }
-
         }
 
         private void button1_Click(object sender, EventArgs e)

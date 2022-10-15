@@ -62,6 +62,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
+            this.label1.BackColor = System.Drawing.Color.Transparent;
             this.label1.Location = new System.Drawing.Point(745, 9);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(83, 20);
@@ -71,6 +72,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
+            this.label2.BackColor = System.Drawing.Color.Transparent;
             this.label2.Location = new System.Drawing.Point(713, 53);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(0, 20);
@@ -120,6 +122,7 @@
             // 
             // pictureBox3
             // 
+            this.pictureBox3.BackColor = System.Drawing.Color.Transparent;
             this.pictureBox3.BackgroundImage = global::Carmageddon.Forms.Properties.Resources.letters;
             this.pictureBox3.Location = new System.Drawing.Point(188, 124);
             this.pictureBox3.Name = "pictureBox3";
@@ -129,6 +132,7 @@
             // 
             // pictureBox4
             // 
+            this.pictureBox4.BackColor = System.Drawing.Color.Transparent;
             this.pictureBox4.BackgroundImage = global::Carmageddon.Forms.Properties.Resources.letters;
             this.pictureBox4.Location = new System.Drawing.Point(908, 124);
             this.pictureBox4.Name = "pictureBox4";
@@ -138,6 +142,7 @@
             // 
             // pictureBox5
             // 
+            this.pictureBox5.BackColor = System.Drawing.Color.Transparent;
             this.pictureBox5.BackgroundImage = global::Carmageddon.Forms.Properties.Resources.numbers;
             this.pictureBox5.Location = new System.Drawing.Point(92, 180);
             this.pictureBox5.Name = "pictureBox5";
@@ -147,6 +152,7 @@
             // 
             // pictureBox6
             // 
+            this.pictureBox6.BackColor = System.Drawing.Color.Transparent;
             this.pictureBox6.BackgroundImage = global::Carmageddon.Forms.Properties.Resources.numbers;
             this.pictureBox6.Location = new System.Drawing.Point(812, 180);
             this.pictureBox6.Name = "pictureBox6";
@@ -195,6 +201,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
+            this.label6.BackColor = System.Drawing.Color.Transparent;
             this.label6.Location = new System.Drawing.Point(259, 12);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(0, 20);
@@ -203,6 +210,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
+            this.label7.BackColor = System.Drawing.Color.Transparent;
             this.label7.Location = new System.Drawing.Point(286, 65);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(0, 20);
@@ -211,6 +219,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
+            this.label8.BackColor = System.Drawing.Color.Transparent;
             this.label8.Location = new System.Drawing.Point(22, 53);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(0, 20);
