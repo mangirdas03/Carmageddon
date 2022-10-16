@@ -2,6 +2,7 @@
 using Carmageddon.Forms.AbstractFactory;
 using Carmageddon.Forms.Factory;
 using Carmageddon.Forms.Models;
+using Carmageddon.Forms.Observer;
 using Microsoft.AspNetCore.SignalR.Client;
 using Newtonsoft.Json;
 using System;
@@ -25,11 +26,14 @@ namespace Carmageddon
         private Player _player;
         private WeaponFactory _weaponFactory;
         private Car selectedCar;
+        private Grid _enemyGrid;
         private Stack<Image> previousImages = new Stack<Image>();
         private Stack<Car> _cars = new Stack<Car>();
         private bool rotate = false;
+
         public Form2(HubConnection conn, Player player)
         {
+            _enemyGrid = new Grid(this);
             _conn = conn;
             _player = player;
             GetPlayerCount(conn, player);
@@ -315,6 +319,7 @@ namespace Carmageddon
 
             label4.Text = "Enemy grid cell pressed: " + cellPressed;
             Debug.WriteLine("Enemy grid cell pressed: " + cellPressed);
+            _enemyGrid.CheckCell(cellPressed);
             GetTotalShots(_conn, true);
         }
 
@@ -434,6 +439,24 @@ namespace Carmageddon
             var cars = _cars.ToList();
             await SendCarsToApi(cars);
             // send cars to backend
+        }
+
+        public void AddShot(int coordX, int coordY)
+        {
+            Image background;
+            using (var bmpTemp = new Bitmap(pictureBox2.Image))
+            {
+                background = new Bitmap(bmpTemp);
+            }
+            string imgpath = Directory.GetCurrentDirectory() + "\\Resources\\hit.png";
+            Image hitmark;
+            using (var bmpTemp = new Bitmap(imgpath))
+            {
+                hitmark = new Bitmap(bmpTemp);
+            }
+            Graphics carImage = Graphics.FromImage(background);
+            carImage.DrawImage(hitmark, coordX, coordY);
+            pictureBox2.Image = background;
         }
     }
 }
