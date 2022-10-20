@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Carmageddon.Forms.Decorator;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -320,12 +321,17 @@ namespace Carmageddon.Forms
 
         private void button15_Click(object sender, EventArgs e)
         {
-            string backPath = Directory.GetCurrentDirectory() + "\\Resources\\Models\\white.png";
-            using (var bmpTemp = new Bitmap(backPath))
-            {
-                _grid = new Bitmap(bmpTemp);
-            }
-            pictureBox1.Image = _grid;
+            //string backPath = Directory.GetCurrentDirectory() + "\\Resources\\Models\\white.png";
+            //using (var bmpTemp = new Bitmap(backPath))
+            //{
+            //    _grid = new Bitmap(bmpTemp);
+            //}
+            var gridComp = new GridComponent();
+            var decorator = new WhiteGridDecorator();
+            decorator.SetComponent(gridComp);
+
+
+            pictureBox1.Image = decorator.GetImage();
             pictureBox1.SizeMode = PictureBoxSizeMode.CenterImage;
             grid = "white.png";
             button8.Visible = true;
@@ -333,12 +339,12 @@ namespace Carmageddon.Forms
 
         private void button16_Click(object sender, EventArgs e)
         {
-            string backPath = Directory.GetCurrentDirectory() + "\\Resources\\Models\\inverted.png";
-            using (var bmpTemp = new Bitmap(backPath))
-            {
-                _grid = new Bitmap(bmpTemp);
-            }
-            pictureBox1.Image = _grid;
+            var gridComp = new GridComponent();
+            var decorator = new InvertedGridDecorator();
+            decorator.SetComponent(gridComp);
+
+
+            pictureBox1.Image = decorator.GetImage();
             pictureBox1.SizeMode = PictureBoxSizeMode.CenterImage;
             grid = "inverted.png";
             button8.Visible = true;
@@ -346,12 +352,12 @@ namespace Carmageddon.Forms
 
         private void button17_Click(object sender, EventArgs e)
         {
-            string backPath = Directory.GetCurrentDirectory() + "\\Resources\\Models\\colorful.png";
-            using (var bmpTemp = new Bitmap(backPath))
-            {
-                _grid = new Bitmap(bmpTemp);
-            }
-            pictureBox1.Image = _grid;
+            var gridComp = new GridComponent();
+            var decorator = new ColorfulGridDecorator();
+            decorator.SetComponent(gridComp);
+
+
+            pictureBox1.Image = decorator.GetImage();
             pictureBox1.SizeMode = PictureBoxSizeMode.CenterImage;
             grid = "colorful.png";
             button8.Visible = true;

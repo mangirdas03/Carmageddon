@@ -1,6 +1,8 @@
-﻿namespace Carmageddon.Forms.Models
+﻿using Carmageddon.Forms.Prototype;
+
+namespace Carmageddon.Forms.Models
 {
-    public abstract class Car
+    public abstract class Car : IPrototype
     {
         public enum CarSize
         {
@@ -16,6 +18,11 @@
         public (int, int, string) GetInfo()
         {
             return (Health, Length, Image);
+        }
+
+        public Car MakeCopy()
+        {
+            return (Car)this.MemberwiseClone();
         }
     }
 }

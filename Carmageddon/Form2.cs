@@ -1,5 +1,6 @@
 ﻿using Carmageddon.Forms;
 using Carmageddon.Forms.AbstractFactory;
+using Carmageddon.Forms.Adapter;
 using Carmageddon.Forms.Factory;
 using Carmageddon.Forms.Models;
 using Carmageddon.Forms.Observer;
@@ -26,35 +27,56 @@ namespace Carmageddon
         private Player _player;
         private WeaponFactory _weaponFactory;
         private Car selectedCar;
+        private Car previousCar;
         private Grid _enemyGrid;
         private Stack<Image> previousImages = new Stack<Image>();
         private Stack<Car> _cars = new Stack<Car>();
         private bool rotate = false;
+        private bool stop = false;
+        private bool display = false;
+        private bool displayShots = false;
 
         public Form2(HubConnection conn, Player player)
         {
+            IConsoleLogger logger = new ConsoleLoggerAdapter();
+            logger.LogMessage("Player " + player.Username + " has logged in", false);
             _enemyGrid = new Grid(this);
             _conn = conn;
             _player = player;
-            GetPlayerCount(conn, player);
-            GetBattleDuration(conn);
-            GetPlayerNames(conn);
             InitializeComponent();
+            comboBox1.Text = "--Select stats--";
+            comboBox1.Items.Add("Player count");
+            comboBox1.Items.Add("Battle duration");
+            comboBox1.Items.Add("Player names");
+            comboBox1.Items.Add("Total shots");
         }
 
         private async Task GetPlayerCount(HubConnection conn, Player player)
         {
             await foreach (var model in conn.StreamAsync<GameStatusModel>("GetPlayerCount", player))
             {
-                label2.Text = "Connected players: " + model.PlayerCount.ToString();
+                label8.Text = "Connected players: " + model.PlayerCount.ToString();
+                if (stop)
+                {
+                    break;
+                }
             }
         }
 
         private async Task GetBattleDuration(HubConnection conn)
         {
+            stop = false;
+            display = true;
             await foreach (var model in conn.StreamAsync<GameStatusModel>("GetBattleDuration"))
             {
-                label6.Text = "Battle duration: " + model.BattleDuration.ToLongTimeString();
+                if (display)
+                {
+                    label8.Text = "Battle duration: " + model.BattleDuration.ToLongTimeString();
+                }
+                if (stop)
+                {
+                    break;
+                }
             }
         }
 
@@ -62,7 +84,10 @@ namespace Carmageddon
         {
             await foreach (var model in conn.StreamAsync<GameStatusModel>("GetMovesCount", playerShot))
             {
-                label7.Text = "Total shots: " + model.MovesCount.ToString();
+                if (displayShots)
+                {
+                    label8.Text = "Total shots: " + model.MovesCount.ToString();
+                }
                 break;
             }
         }
@@ -75,6 +100,10 @@ namespace Carmageddon
                 foreach (var name in model.PlayerNames)
                 {
                     label8.Text += name + "\r\n";
+                }
+                if (stop)
+                {
+                    break;
                 }
             }
         }
@@ -335,27 +364,51 @@ namespace Carmageddon
         private void button1_Click(object sender, EventArgs e)
         {
             var carCreator = new CarCreator();
-            var car = carCreator.CreateCar(CarSize.Small);
-            (var health, var length, string image) = car.GetInfo();
-            label5.Text = "Car selected: " + health + " " + length;
+            Car car;
+            if(previousCar != null && previousCar.Health == 1)
+            {
+                car = previousCar.MakeCopy();
+            }
+            else
+            {
+                car = carCreator.CreateCar(CarSize.Small);
+                previousCar = car;
+            }
+            label5.Text = "Car selected: " + car.Health + " " + car.Length;
             selectedCar = car;
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
             var carCreator = new CarCreator();
-            var car = carCreator.CreateCar(CarSize.Medium);
-            (var health, var length, string image) = car.GetInfo();
-            label5.Text = "Car selected: " + health + " " + length;
+            Car car;
+            if (previousCar != null && previousCar.Health == 2)
+            {
+                car = previousCar.MakeCopy();
+            }
+            else
+            {
+                car = carCreator.CreateCar(CarSize.Medium);
+                previousCar = car;
+            }
+            label5.Text = "Car selected: " + car.Health + " " + car.Length;
             selectedCar = car;
         }
 
         private void button3_Click_1(object sender, EventArgs e)
         {
             var carCreator = new CarCreator();
-            var car = carCreator.CreateCar(CarSize.Big);
-            (var health, var length, string image) = car.GetInfo();
-            label5.Text = "Car selected: " + health + " " + length;
+            Car car;
+            if (previousCar != null && previousCar.Health == 3)
+            {
+                car = previousCar.MakeCopy();
+            }
+            else
+            {
+                car = carCreator.CreateCar(CarSize.Big);
+                previousCar = car;
+            }
+            label5.Text = "Car selected: " + car.Health + " " + car.Length;
             selectedCar = car;
         }
 
@@ -457,6 +510,32 @@ namespace Carmageddon
             Graphics carImage = Graphics.FromImage(background);
             carImage.DrawImage(hitmark, coordX, coordY);
             pictureBox2.Image = background;
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            display = false;
+            displayShots = false;
+            switch (comboBox1.SelectedIndex)
+            {
+                case 0:
+                    stop = true;
+                    GetPlayerCount(_conn, _player);
+                    break;
+                case 1:
+                    stop = true;
+                    GetBattleDuration(_conn);
+                    break;
+                case 2:
+                    stop = true;
+                    GetPlayerNames(_conn);
+                    break;
+                case 3:
+                    stop = true;
+                    displayShots = true;
+                    GetTotalShots(_conn, false);
+                    break;
+            }
         }
     }
 }
