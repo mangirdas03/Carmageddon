@@ -28,7 +28,7 @@ namespace Carmageddon
         private WeaponFactory _weaponFactory;
         private Car selectedCar;
         private Car previousCar;
-        private Grid _enemyGrid;
+        private IGrid _enemyGrid;
         private Stack<Image> previousImages = new Stack<Image>();
         private Stack<Car> _cars = new Stack<Car>();
         private bool rotate = false;
@@ -494,8 +494,9 @@ namespace Carmageddon
             // send cars to backend
         }
 
-        public void AddShot(int coordX, int coordY)
+        public void AddShot(string coords, int coordX, int coordY)
         {
+            Debug.WriteLine("New shot made: " + coords);
             Image background;
             using (var bmpTemp = new Bitmap(pictureBox2.Image))
             {
