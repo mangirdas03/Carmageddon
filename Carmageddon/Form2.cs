@@ -1,6 +1,7 @@
 ﻿using Carmageddon.Forms;
 using Carmageddon.Forms.AbstractFactory;
 using Carmageddon.Forms.Adapter;
+using Carmageddon.Forms.Facade;
 using Carmageddon.Forms.Factory;
 using Carmageddon.Forms.Models;
 using Carmageddon.Forms.Observer;
@@ -13,6 +14,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -35,6 +37,7 @@ namespace Carmageddon
         private bool stop = false;
         private bool display = false;
         private bool displayShots = false;
+        private Stopwatch stopWatch = new();
 
         public Form2(HubConnection conn, Player player)
         {
@@ -49,6 +52,10 @@ namespace Carmageddon
             comboBox1.Items.Add("Battle duration");
             comboBox1.Items.Add("Player names");
             comboBox1.Items.Add("Total shots");
+
+            stopWatch.Start();
+
+            label10.Visible = false;
         }
 
         private async Task GetPlayerCount(HubConnection conn, Player player)
@@ -350,6 +357,27 @@ namespace Carmageddon
             Debug.WriteLine("Enemy grid cell pressed: " + cellPressed);
             _enemyGrid.CheckCell(cellPressed);
             GetTotalShots(_conn, true);
+
+            ////////////////////////////////////////
+            Decision decision = new();
+
+            ClickInput input = new(cellPressed);
+
+            bool shouldReset = decision.ShouldReset(input, label10.Visible).Item1;
+            bool visibilityFlag = decision.ShouldReset(input, label10.Visible).Item2;
+
+            if (shouldReset)
+            {
+                stopWatch.Reset();
+                label10.Visible = visibilityFlag;
+                stopWatch.Start();
+            }
+            ///////////////////////////////////////
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            label10.Text = "Time since last shot: " + stopWatch.Elapsed.ToString("mm\\:ss");
         }
 
         private void Form2_Load(object sender, EventArgs e)
