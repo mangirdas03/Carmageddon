@@ -1,6 +1,7 @@
 ﻿using Carmageddon.Forms;
 using Carmageddon.Forms.AbstractFactory;
 using Carmageddon.Forms.Adapter;
+using Carmageddon.Forms.Command;
 using Carmageddon.Forms.Factory;
 using Carmageddon.Forms.Models;
 using Carmageddon.Forms.Observer;
@@ -29,8 +30,9 @@ namespace Carmageddon
         private Car selectedCar;
         private Car previousCar;
         private IGrid _enemyGrid;
-        private Stack<Image> previousImages = new Stack<Image>();
-        private Stack<Car> _cars = new Stack<Car>();
+        //private Stack<Image> previousImages = new Stack<Image>(); // jei kazkas neveiktu palieku dar
+        //private Stack<Car> _cars = new Stack<Car>();
+        private Invoker invoker = new Invoker();
         private bool rotate = false;
         private bool stop = false;
         private bool display = false;
@@ -236,14 +238,14 @@ namespace Carmageddon
             }
             if (selectedCar != null)
             {
-                _cars.Push(selectedCar);
+                //_cars.Push(selectedCar);
                 (_, _, string image) = selectedCar.GetInfo();
                 Image background;
                 using (var bmpTemp = new Bitmap(pictureBox1.Image))
                 {
                     background = new Bitmap(bmpTemp);
                 }
-                previousImages.Push(pictureBox1.Image);
+                //previousImages.Push(pictureBox1.Image);
                 string carpath = Directory.GetCurrentDirectory() + "\\Resources\\" + image;
                 Image car;
                 using (var bmpTemp = new Bitmap(carpath))
@@ -252,6 +254,7 @@ namespace Carmageddon
                 }
                 if (rotate)
                     car.RotateFlip(RotateFlipType.Rotate90FlipX);
+                invoker.AddCar(selectedCar, pictureBox1.Image);
                 Graphics carImage = Graphics.FromImage(background);
                 carImage.DrawImage(car, coordX, coordY);
                 pictureBox1.Image = background;
@@ -464,12 +467,16 @@ namespace Carmageddon
 
         private void button6_Click(object sender, EventArgs e)
         {
-            if (previousImages.Count != 0)
+            //if (previousImages.Count != 0)
+            //{
+            //    pictureBox1.Image = previousImages.Pop();
+            //    _cars.Pop();
+            //}
+
+            Image previous = invoker.Undo();
+            if (previous != null)
             {
-                //var img = previousImages.Last();
-                //previousImages.RemoveAt(previousImages.Count - 1);
-                pictureBox1.Image = previousImages.Pop();
-                _cars.Pop();
+                pictureBox1.Image = previous;
             }
         }
 
@@ -489,7 +496,8 @@ namespace Carmageddon
             button6.Visible = false;
             button7.Visible = false;
             button8.Visible = false;
-            var cars = _cars.ToList();
+            //var cars = _cars.ToList();
+            var cars = invoker.CarStack().ToList();
             await SendCarsToApi(cars);
             // send cars to backend
         }
