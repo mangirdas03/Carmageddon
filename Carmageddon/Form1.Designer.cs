@@ -38,18 +38,19 @@
             // 
             this.MainLabel.AutoSize = true;
             this.MainLabel.Enabled = false;
-            this.MainLabel.Location = new System.Drawing.Point(560, 9);
+            this.MainLabel.Location = new System.Drawing.Point(490, 7);
             this.MainLabel.Name = "MainLabel";
-            this.MainLabel.Size = new System.Drawing.Size(205, 20);
+            this.MainLabel.Size = new System.Drawing.Size(162, 15);
             this.MainLabel.TabIndex = 0;
             this.MainLabel.Text = "Hello! Welcome to the Game!";
             this.MainLabel.Click += new System.EventHandler(this.label1_Click);
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(609, 97);
+            this.button1.Location = new System.Drawing.Point(533, 73);
+            this.button1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(94, 29);
+            this.button1.Size = new System.Drawing.Size(82, 22);
             this.button1.TabIndex = 1;
             this.button1.Text = "Start game";
             this.button1.UseVisualStyleBackColor = true;
@@ -57,16 +58,18 @@
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(598, 47);
+            this.textBox1.Location = new System.Drawing.Point(523, 35);
+            this.textBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(125, 27);
+            this.textBox1.Size = new System.Drawing.Size(110, 23);
             this.textBox1.TabIndex = 2;
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(598, 132);
+            this.button2.Location = new System.Drawing.Point(523, 99);
+            this.button2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(114, 29);
+            this.button2.Size = new System.Drawing.Size(100, 22);
             this.button2.TabIndex = 3;
             this.button2.Text = "Car Designer";
             this.button2.UseVisualStyleBackColor = true;
@@ -74,13 +77,14 @@
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1327, 556);
+            this.ClientSize = new System.Drawing.Size(1161, 417);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.MainLabel);
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "Form1";
             this.Text = "Carmageddon";
             this.ResumeLayout(false);
