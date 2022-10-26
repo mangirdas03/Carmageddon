@@ -24,7 +24,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Carmageddon
 {
-    public partial class Form2 : Form
+    public partial class Form2 : Form, IConsoleLogger
     {
         private HubConnection _conn;
         private Player _player;
@@ -34,7 +34,7 @@ namespace Carmageddon
         private IGrid _enemyGrid;
         //private Stack<Image> previousImages = new Stack<Image>(); // jei kazkas neveiktu palieku dar
         //private Stack<Car> _cars = new Stack<Car>();
-        private Invoker invoker = new Invoker();
+        private Invoker invoker = new Invoker(new ConcreteCommand(new Receiver()));
         private bool rotate = false;
         private bool stop = false;
         private bool display = false;
@@ -49,15 +49,14 @@ namespace Carmageddon
             _conn = conn;
             _player = player;
             InitializeComponent();
+
             comboBox1.Text = "--Select stats--";
             comboBox1.Items.Add("Player count");
             comboBox1.Items.Add("Battle duration");
             comboBox1.Items.Add("Player names");
             comboBox1.Items.Add("Total shots");
 
-            stopWatch.Start();
-
-            label10.Visible = false;
+            
         }
 
         private async Task GetPlayerCount(HubConnection conn, Player player)
@@ -359,7 +358,7 @@ namespace Carmageddon
             label4.Text = "Enemy grid cell pressed: " + cellPressed;
             Debug.WriteLine("Enemy grid cell pressed: " + cellPressed);
             _enemyGrid.CheckCell(cellPressed);
-            GetTotalShots(_conn, true);
+            
 
             ////////////////////////////////////////
             Decision decision = new();
@@ -376,6 +375,7 @@ namespace Carmageddon
                 stopWatch.Start();
             }
             ///////////////////////////////////////
+            GetTotalShots(_conn, true);
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -398,15 +398,15 @@ namespace Carmageddon
             Car car;
             if(previousCar != null && previousCar.Health == 1)
             {
-                car = previousCar.MakeCopy();
+                car = previousCar.MakeShallowCopy();
             }
             else
             {
                 car = carCreator.CreateCar(CarSize.Small);
                 previousCar = car;
             }
-            label5.Text = "Car selected: " + car.Health + " " + car.Length;
-            selectedCar = car;
+            var message = "Car selected: " + car.Health + " " + car.Length;
+            LogMessage(message, true);
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -415,15 +415,15 @@ namespace Carmageddon
             Car car;
             if (previousCar != null && previousCar.Health == 2)
             {
-                car = previousCar.MakeCopy();
+                car = previousCar.MakeShallowCopy();
             }
             else
             {
                 car = carCreator.CreateCar(CarSize.Medium);
                 previousCar = car;
             }
-            label5.Text = "Car selected: " + car.Health + " " + car.Length;
-            selectedCar = car;
+            var message = "Car selected: " + car.Health + " " + car.Length;
+            LogMessage(message, true);
         }
 
         private void button3_Click_1(object sender, EventArgs e)
@@ -432,14 +432,15 @@ namespace Carmageddon
             Car car;
             if (previousCar != null && previousCar.Health == 3)
             {
-                car = previousCar.MakeCopy();
+                car = previousCar.MakeShallowCopy();
             }
             else
             {
                 car = carCreator.CreateCar(CarSize.Big);
                 previousCar = car;
             }
-            label5.Text = "Car selected: " + car.Health + " " + car.Length;
+            var message = "Car selected: " + car.Health + " " + car.Length;
+            LogMessage(message, false);
             selectedCar = car;
         }
 
@@ -572,6 +573,16 @@ namespace Carmageddon
                     displayShots = true;
                     GetTotalShots(_conn, false);
                     break;
+            }
+        }
+
+        public void LogMessage(string message, bool inline)
+        {
+            if(inline)
+                label5.Text = message;
+            else
+            {
+                label5.Text = message.Substring(0, message.Length / 2) + "\n" + message.Substring(message.Length / 2, message.Length / 2);
             }
         }
     }

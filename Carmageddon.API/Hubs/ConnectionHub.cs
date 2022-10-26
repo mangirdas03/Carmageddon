@@ -47,18 +47,15 @@ namespace Carmageddon.API.Hubs
         public async IAsyncEnumerable<GameStatusModel> GetMovesCount(CancellationToken cancellationToken, bool playerShoot)
         {
             var gameStatus = new GameStatus(new MovesCount());
-            while (true)
+            if (!playerShoot)
             {
-                if (!playerShoot)
-                {
-                    yield return _gameStatusModel;
-                    continue;
-                }
-
-                playerShoot = false;
-                yield return gameStatus.ExecuteStrategy(_gameStatusModel);
-                await Task.Delay(1000, cancellationToken);
+                yield return _gameStatusModel;
             }
+            else
+            {
+                yield return gameStatus.ExecuteStrategy(_gameStatusModel);
+            }
+            await Task.Delay(1000, cancellationToken);
         }
 
         public async IAsyncEnumerable<GameStatusModel> GetPlayerNames(CancellationToken cancellationToken)

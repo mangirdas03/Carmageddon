@@ -9,6 +9,7 @@ namespace Carmageddon.Forms.Prototype
 {
     public interface IPrototype
     {
-        public Car MakeCopy();
+        public Car MakeShallowCopy();
+        public Car MakeDeepCopy();
     }
 }

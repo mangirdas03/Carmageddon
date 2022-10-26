@@ -1,6 +1,4 @@
-﻿using Microsoft.Owin.Security.Provider;
-
-namespace Carmageddon.Forms.Facade
+﻿namespace Carmageddon.Forms.Facade
 {
     // Facade
     public class Decision

@@ -9,25 +9,26 @@ namespace Carmageddon.Forms.Command
 {
     public class Invoker
     {
+        public Command _command;
         Receiver receiver = new Receiver();
         Stack<Image> previousImages = new Stack<Image>();
         Stack<Car> _cars = new Stack<Car>();
         int count = 0;
-
+        public Invoker(Command command)
+        {
+            _command = command;
+        }
         public void AddCar(Car car, Image image)
         {
-            Command command = new ConcreteCommand();
-            command.Execute(car, image, _cars, previousImages);
+            _command.Execute(car, image, _cars, previousImages);
             count++;
-            receiver.Action();
         }
         public Image Undo()
         {
            if(count > 0)
             {
-                Command command = new ConcreteCommand();
                 count--;
-                return command.Undo(_cars, previousImages);
+                return _command.Undo(_cars, previousImages);
             }
            else
                 return null;

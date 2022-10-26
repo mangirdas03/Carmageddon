@@ -14,7 +14,8 @@ namespace Carmageddon
             var creator = new CarCreator();
             var car = creator.CreateCar(Car.CarSize.Small);
             Car x = car;
-            Car y = car.MakeCopy();
+            Car y = car.MakeShallowCopy();
+            Car l = car.MakeDeepCopy();
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();

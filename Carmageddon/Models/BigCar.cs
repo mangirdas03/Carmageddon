@@ -8,5 +8,9 @@
             this.Length = length;
             this.Image = image;
         }
+        public BigCar()
+        {
+
+        }
     }
 }

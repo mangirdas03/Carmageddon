@@ -20,9 +20,17 @@ namespace Carmageddon.Forms.Models
             return (Health, Length, Image);
         }
 
-        public Car MakeCopy()
+        public Car MakeShallowCopy()
         {
             return (Car)this.MemberwiseClone();
+        }
+
+        public Car MakeDeepCopy()
+        {
+            var car = (Car)Activator.CreateInstance(this.GetType());
+            car.Length = this.Length;
+            car.Health = this.Health;
+            return car;
         }
     }
 }

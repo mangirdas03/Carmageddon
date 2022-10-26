@@ -9,16 +9,20 @@ namespace Carmageddon.Forms.Command
 {
     public class ConcreteCommand : Command
     {
+        public ConcreteCommand(Receiver receiver) : base(receiver)
+        {
+
+        }
+
         public override void Execute(Car car, Image image, Stack<Car> cars, Stack<Image> previousImages)
         {
-            cars.Push(car);
-            previousImages.Push(image);
+            _receiver.Action(cars, previousImages, car, image);
         }
 
         public override Image Undo(Stack<Car> cars, Stack<Image> previousImages)
         {
-            cars.Pop();
-            return previousImages.Pop();
+            var image = _receiver.Action(cars, previousImages);
+            return image;
         }
     }
 }
