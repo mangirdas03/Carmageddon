@@ -1,14 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
+using Microsoft.AspNetCore.SignalR.Client;
+
 
 namespace Carmageddon.Forms.Models
 {
-    public class MachineGun
+    public class MachineGun : Weapon
     {
-        public int Damage { get; set; }
-        public int ShotsLeft { get; set; }
+        public async override Task<(bool, Type)> Shoot()
+        {
+            bool isHit = false;
+            await foreach (var hit in BattleHub.StreamAsync<bool>("CheckShot", typeof(MachineGun).Name))
+            {
+                isHit = hit;
+                break;
+            }
+            ShotsLeft--;
+            Debug.WriteLine("Machinegun shot made!");
+            if(isHit)
+            {
+                Debug.WriteLine("Enemy hit!");
+            }
+
+            return (isHit, typeof(MachineGun));
+        }
     }
 }

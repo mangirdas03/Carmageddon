@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using static Carmageddon.Forms.Models.Car;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using Carmageddon.Forms.Bridge__Shooting_;
 
 namespace Carmageddon
 {
@@ -40,6 +41,9 @@ namespace Carmageddon
         private bool display = false;
         private bool displayShots = false;
         private Stopwatch stopWatch = new();
+        private MachineGun? machinegun = null;
+        private Cannon? cannon = null;
+        private AbstractShootingHandler shootingHandler;
 
         public Form2(HubConnection conn, Player player)
         {
@@ -49,14 +53,13 @@ namespace Carmageddon
             _conn = conn;
             _player = player;
             InitializeComponent();
+            shootingHandler = new RefinedShootingHandler();
 
             comboBox1.Text = "--Select stats--";
             comboBox1.Items.Add("Player count");
             comboBox1.Items.Add("Battle duration");
             comboBox1.Items.Add("Player names");
             comboBox1.Items.Add("Total shots");
-
-            
         }
 
         private async Task GetPlayerCount(HubConnection conn, Player player)
@@ -357,25 +360,29 @@ namespace Carmageddon
 
             label4.Text = "Enemy grid cell pressed: " + cellPressed;
             Debug.WriteLine("Enemy grid cell pressed: " + cellPressed);
-            _enemyGrid.CheckCell(cellPressed);
-            
 
-            ////////////////////////////////////////
-            Decision decision = new();
-
-            ClickInput input = new(cellPressed);
-
-            bool shouldReset = decision.ShouldReset(input, label10.Visible).Item1;
-            bool visibilityFlag = decision.ShouldReset(input, label10.Visible).Item2;
-
-            if (shouldReset)
+            if(shootingHandler.Weapon != null && 
+               shootingHandler.Weapon.ShotsLeft != 0)
             {
-                stopWatch.Reset();
-                label10.Visible = visibilityFlag;
-                stopWatch.Start();
+                _enemyGrid.CheckCell(cellPressed);
+
+                ////////////////////////////////////////
+                Decision decision = new();
+
+                ClickInput input = new(cellPressed);
+
+                bool shouldReset = decision.ShouldReset(input, label10.Visible).Item1;
+                bool visibilityFlag = decision.ShouldReset(input, label10.Visible).Item2;
+
+                if (shouldReset)
+                {
+                    stopWatch.Reset();
+                    label10.Visible = visibilityFlag;
+                    stopWatch.Start();
+                }
+                ///////////////////////////////////////
+                GetTotalShots(_conn, true);
             }
-            ///////////////////////////////////////
-            GetTotalShots(_conn, true);
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -444,52 +451,89 @@ namespace Carmageddon
             selectedCar = car;
         }
 
+        //cnn
         private void button4_Click(object sender, EventArgs e)
+        {
+            if (cannon == null)
+            {
+                initializeCannon();
+            }
+            shootingHandler.Weapon = cannon;
+            updateShotCount();
+            //label9.Text = "Cannon selected:\r\nShots left - " + shootingHandler.Weapon.ShotsLeft;
+        }
+
+        //mg
+        private void button5_Click(object sender, EventArgs e)
+        {
+            if(machinegun == null)
+            {
+                initializeMachinegun();
+            }
+
+            shootingHandler.Weapon = machinegun;
+            updateShotCount();
+            //label9.Text = "MG selected:\r\nShots left - " + shootingHandler.Weapon.ShotsLeft;
+        }
+
+        private void updateShotCount()
+        {
+            if(shootingHandler.Weapon is MachineGun)
+            {
+                label9.Text = "MG selected:\r\nShots left - " + shootingHandler.Weapon.ShotsLeft;
+            }
+            else if(shootingHandler.Weapon is Cannon)
+            {
+                label9.Text = "Cannon selected:\r\nShots left - " + shootingHandler.Weapon.ShotsLeft;
+            }
+        }
+
+
+        private void initializeMachinegun()
         {
             var random = new Random();
             var option = random.Next(1, 4);
-            Cannon weapon;
             switch (option)
             {
                 case 1:
                     _weaponFactory = new LowAmmoFactory();
-                    weapon = _weaponFactory.CreateCannon();
-                    label9.Text = "Cannon selected:\r\nShots left - " + weapon.ShotsLeft;
+                    machinegun = _weaponFactory.CreateMachineGun();
+                    label9.Text = "MG selected:\r\nShots left - " + machinegun.ShotsLeft;
                     break;
                 case 2:
                     _weaponFactory = new MediumAmmoFactory();
-                    weapon = _weaponFactory.CreateCannon();
-                    label9.Text = "Cannon selected:\r\nShots left - " + weapon.ShotsLeft;
+                    machinegun = _weaponFactory.CreateMachineGun();
+                    label9.Text = "MG selected:\r\nShots left - " + machinegun.ShotsLeft;
                     break;
                 case 3:
                     _weaponFactory = new HighAmmoFactory();
-                    weapon = _weaponFactory.CreateCannon();
-                    label9.Text = "Cannon selected:\r\nShots left - " + weapon.ShotsLeft;
+                    machinegun = _weaponFactory.CreateMachineGun();
+                    label9.Text = "MG selected:\r\nShots left - " + machinegun.ShotsLeft;
                     break;
             }
         }
 
-        private void button5_Click(object sender, EventArgs e)
+
+        private void initializeCannon()
         {
             var random = new Random();
             var option = random.Next(1, 4);
-            MachineGun weapon;
             switch (option)
             {
                 case 1:
                     _weaponFactory = new LowAmmoFactory();
-                    weapon = _weaponFactory.CreateMachineGun();
-                    label9.Text = "MG selected:\r\nShots left - " + weapon.ShotsLeft;
+                    cannon = _weaponFactory.CreateCannon();
+                    label9.Text = "Cannon selected:\r\nShots left - " + cannon.ShotsLeft;
                     break;
                 case 2:
                     _weaponFactory = new MediumAmmoFactory();
-                    weapon = _weaponFactory.CreateMachineGun();
-                    label9.Text = "MG selected:\r\nShots left - " + weapon.ShotsLeft;
+                    cannon = _weaponFactory.CreateCannon();
+                    label9.Text = "Cannon selected:\r\nShots left - " + cannon.ShotsLeft;
                     break;
                 case 3:
                     _weaponFactory = new HighAmmoFactory();
-                    weapon = _weaponFactory.CreateMachineGun();
-                    label9.Text = "MG selected:\r\nShots left - " + weapon.ShotsLeft;
+                    cannon = _weaponFactory.CreateCannon();
+                    label9.Text = "Cannon selected:\r\nShots left - " + cannon.ShotsLeft;
                     break;
             }
         }
@@ -531,17 +575,20 @@ namespace Carmageddon
             // send cars to backend
         }
 
-        public void AddShot(string coords, int coordX, int coordY)
+        public async Task AddShot(string coords, int coordX, int coordY)
         {
+            var icon = await shootingHandler.HandleShot();
+            updateShotCount();
+
             Debug.WriteLine("New shot made: " + coords);
             Image background;
             using (var bmpTemp = new Bitmap(pictureBox2.Image))
             {
                 background = new Bitmap(bmpTemp);
             }
-            string imgpath = Directory.GetCurrentDirectory() + "\\Resources\\hit.png";
+            string imgPath = Directory.GetCurrentDirectory() + $"\\Resources\\{icon}.png";
             Image hitmark;
-            using (var bmpTemp = new Bitmap(imgpath))
+            using (var bmpTemp = new Bitmap(imgPath))
             {
                 hitmark = new Bitmap(bmpTemp);
             }

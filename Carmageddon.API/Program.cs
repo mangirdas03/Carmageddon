@@ -26,6 +26,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.MapHub<ConnectionHub>("/current-time");
+app.MapHub<BattleHub>("/battle");
 app.UseAuthorization();
 
 app.MapControllers();
