@@ -577,7 +577,7 @@ namespace Carmageddon
 
         public async Task AddShot(string coords, int coordX, int coordY)
         {
-            var icon = await shootingHandler.HandleShot();
+            var icon = await shootingHandler.HandleShot(coords); 
             updateShotCount();
 
             Debug.WriteLine("New shot made: " + coords);
