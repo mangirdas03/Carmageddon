@@ -2,13 +2,13 @@
 
 namespace Carmageddon.Forms
 {
-    public class HubConnectionSingleton
+    public class BattleHub
     {
         private object lockObject = new object();
         private HubConnection _connection = null;
-        private const string URI = "https://localhost:7237/current-time";
+        private const string URI = "https://localhost:7237/battle";
 
-        public HubConnectionSingleton()
+        public BattleHub()
         {
         }
 

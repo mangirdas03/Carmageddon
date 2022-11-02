@@ -14,7 +14,8 @@ namespace Carmageddon.Forms.AbstractFactory
             return new Cannon()
             {
                 Damage = 3,
-                ShotsLeft = 3
+                ShotsLeft = 25,
+                BattleHub = new BattleHub().GetInstance()
             };
         }
 
@@ -23,7 +24,8 @@ namespace Carmageddon.Forms.AbstractFactory
             return new MachineGun()
             {
                 Damage = 2,
-                ShotsLeft = 3
+                ShotsLeft = 50,
+                BattleHub = new BattleHub().GetInstance()
             };
         }
     }
