@@ -2,9 +2,9 @@
 {
     public class RefinedShootingHandler : AbstractShootingHandler
     {
-        public async override Task<string> HandleShot(string coords)
+        public async override Task<string> HandleShot(int coordX, int coordY, string username)
         {
-            (bool hit, Type type) = await Weapon.Shoot(coords);
+            (bool hit, Type type) = await Weapon.Shoot(coordX, coordY, username);
 
             if (hit)
             {

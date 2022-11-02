@@ -7,6 +7,7 @@
             this.Health = health;
             this.Length = length;
             this.Image = image;
+            this.Coordinates = new CarPart[length];
         }
         public BigCar()
         {

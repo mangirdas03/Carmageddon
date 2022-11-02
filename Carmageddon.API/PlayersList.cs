@@ -16,6 +16,12 @@ namespace Carmageddon.API
             _players.Add(player);
         }
 
+
+        public static Player GetEnemy(string username)
+        {
+            return _players.FirstOrDefault(x => x.Username != username);
+        }
+
         public static int GetCount()
         {
             return _players.Count;

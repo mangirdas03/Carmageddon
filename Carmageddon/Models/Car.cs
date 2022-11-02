@@ -14,6 +14,7 @@ namespace Carmageddon.Forms.Models
         public int Health { get; set; }
         public int Length { get; set; }
         public string Image { get; set; }
+        public CarPart[] Coordinates { get; set; }
 
         public (int, int, string) GetInfo()
         {
@@ -25,11 +26,28 @@ namespace Carmageddon.Forms.Models
             return (Car)this.MemberwiseClone();
         }
 
-        public Car MakeDeepCopy()
+        public Car MakeDeepCopy(CarSize size)
         {
-            var car = (Car)Activator.CreateInstance(this.GetType());
+            Car car;
+            switch (size)
+            {
+                case CarSize.Small:
+                    car = new SmallCar();
+                    break;
+                case CarSize.Medium:
+                    car = new MediumCar();
+                    break;
+                case CarSize.Big:
+                    car = new BigCar();
+                    break;
+                default:
+                    return null;
+            }
+
             car.Length = this.Length;
             car.Health = this.Health;
+            car.Image = this.Image;
+            car.Coordinates = new CarPart[this.Coordinates.Length];
             return car;
         }
     }
