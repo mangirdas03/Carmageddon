@@ -263,6 +263,7 @@ namespace Carmageddon
                 }
                 if (rotate)
                     car.RotateFlip(RotateFlipType.Rotate90FlipX);
+                getCarCoordinates(coordX, coordY);
                 invoker.AddCar(selectedCar, pictureBox1.Image);
                 Graphics carImage = Graphics.FromImage(background);
                 carImage.DrawImage(car, coordX, coordY);
@@ -273,6 +274,22 @@ namespace Carmageddon
 
             label3.Text = "Your grid cell pressed: " + cellPressed;
             Debug.WriteLine("Your grid cell pressed: " + cellPressed);
+        }
+
+
+        private void getCarCoordinates(int coordX, int coordY)
+        {
+            for (int i = 0; i < selectedCar.Length; i++)
+            {
+                if (rotate)
+                {
+                    selectedCar.Coordinates[i] = new CarPart(coordX + (50 * i), coordY);
+                }
+                else
+                {
+                    selectedCar.Coordinates[i] = new CarPart(coordX, coordY + (50 * i));
+                }
+            }
         }
 
         private void pictureBox2_Click(object sender, EventArgs e)
@@ -405,7 +422,7 @@ namespace Carmageddon
             Car car;
             if(previousCar != null && previousCar.Health == 1)
             {
-                car = previousCar.MakeShallowCopy();
+                car = previousCar.MakeDeepCopy(CarSize.Small);
             }
             else
             {
@@ -414,6 +431,7 @@ namespace Carmageddon
             }
             var message = "Car selected: " + car.Health + " " + car.Length;
             LogMessage(message, true);
+            selectedCar = car;
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -422,7 +440,7 @@ namespace Carmageddon
             Car car;
             if (previousCar != null && previousCar.Health == 2)
             {
-                car = previousCar.MakeShallowCopy();
+                car = previousCar.MakeDeepCopy(CarSize.Medium);
             }
             else
             {
@@ -431,6 +449,7 @@ namespace Carmageddon
             }
             var message = "Car selected: " + car.Health + " " + car.Length;
             LogMessage(message, true);
+            selectedCar = car;
         }
 
         private void button3_Click_1(object sender, EventArgs e)
@@ -439,7 +458,7 @@ namespace Carmageddon
             Car car;
             if (previousCar != null && previousCar.Health == 3)
             {
-                car = previousCar.MakeShallowCopy();
+                car = previousCar.MakeDeepCopy(CarSize.Big);
             }
             else
             {
@@ -487,7 +506,6 @@ namespace Carmageddon
                 label9.Text = "Cannon selected:\r\nShots left - " + shootingHandler.Weapon.ShotsLeft;
             }
         }
-
 
         private void initializeMachinegun()
         {
@@ -577,7 +595,7 @@ namespace Carmageddon
 
         public async Task AddShot(string coords, int coordX, int coordY)
         {
-            var icon = await shootingHandler.HandleShot(coords); 
+            var icon = await shootingHandler.HandleShot(coordX, coordY, _player.Username); 
             updateShotCount();
 
             Debug.WriteLine("New shot made: " + coords);

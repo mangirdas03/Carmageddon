@@ -5,10 +5,10 @@ namespace Carmageddon.Forms.Models
 {
     public class Cannon : Weapon
     {
-        public async override Task<(bool, Type)> Shoot(string coords)
+        public async override Task<(bool, Type)> Shoot(int coordX, int coordY, string username)
         {
             bool isHit = false;
-            await foreach (var hit in BattleHub.StreamAsync<bool>("CheckShot", typeof(Cannon).Name, coords))
+            await foreach (var hit in BattleHub.StreamAsync<bool>("CheckShot", typeof(Cannon).Name, coordX, coordY, username))
             {
                 isHit = hit;
                 break;

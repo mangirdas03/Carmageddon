@@ -8,6 +8,6 @@ namespace Carmageddon.Forms.Models
         public int ShotsLeft { get; set; }
         public HubConnection BattleHub { get; set; }
 
-        public abstract Task<(bool, Type)> Shoot(string coords);
+        public abstract Task<(bool, Type)> Shoot(int coordX, int coordY, string username);
     }
 }

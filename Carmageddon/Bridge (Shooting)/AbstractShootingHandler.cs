@@ -6,6 +6,6 @@ namespace Carmageddon.Forms.Bridge__Shooting_
     {
         public Weapon Weapon { get; set; }
 
-        public abstract Task<string> HandleShot(string coords);
+        public abstract Task<string> HandleShot(int coordX, int coordY, string username);
     }
 }

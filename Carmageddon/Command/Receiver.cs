@@ -10,7 +10,7 @@ namespace Carmageddon.Forms.Command
 {
     public class Receiver
     {
-        public Image Action(Stack<Car> cars, Stack<Image> previousImages, Car car = null, Image image = null)
+        public Image Action(Stack<Car> cars, Stack<Image> previousImages, Car? car = null, Image? image = null)
         {
             if(car == null || image == null)
             {
