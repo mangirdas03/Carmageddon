@@ -22,6 +22,7 @@ using System.Windows.Forms;
 using static Carmageddon.Forms.Models.Car;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using Carmageddon.Forms.Bridge__Shooting_;
+using Carmageddon.Forms.TemplateMethod;
 
 namespace Carmageddon
 {
@@ -33,6 +34,7 @@ namespace Carmageddon
         private Car selectedCar;
         private Car previousCar;
         private IGrid _enemyGrid;
+        private Grid _playerGrid;
         //private Stack<Image> previousImages = new Stack<Image>(); // jei kazkas neveiktu palieku dar
         //private Stack<Car> _cars = new Stack<Car>();
         private Invoker invoker = new Invoker(new ConcreteCommand(new Receiver()));
@@ -50,6 +52,7 @@ namespace Carmageddon
             IConsoleLogger logger = new ConsoleLoggerAdapter();
             logger.LogMessage("Player " + player.Username + " has logged in", false);
             _enemyGrid = new Grid(this);
+            _playerGrid = new Grid(this);
             _conn = conn;
             _player = player;
             InitializeComponent();
@@ -264,12 +267,16 @@ namespace Carmageddon
                 if (rotate)
                     car.RotateFlip(RotateFlipType.Rotate90FlipX);
                 getCarCoordinates(coordX, coordY);
-                invoker.AddCar(selectedCar, pictureBox1.Image);
-                Graphics carImage = Graphics.FromImage(background);
-                carImage.DrawImage(car, coordX, coordY);
-                pictureBox1.Image = background;
-                selectedCar = null;
-                label5.Text = "";
+                var successful = _playerGrid.AddCar(selectedCar);
+                if (successful)
+                {
+                    invoker.AddCar(selectedCar, pictureBox1.Image);
+                    Graphics carImage = Graphics.FromImage(background);
+                    carImage.DrawImage(car, coordX, coordY);
+                    pictureBox1.Image = background;
+                    selectedCar = null;
+                    label5.Text = "";
+                }
             }
 
             label3.Text = "Your grid cell pressed: " + cellPressed;
@@ -426,6 +433,7 @@ namespace Carmageddon
             }
             else
             {
+                _playerGrid.CarPlacer = new SmallCarPlacer();
                 car = carCreator.CreateCar(CarSize.Small);
                 previousCar = car;
             }
@@ -444,6 +452,7 @@ namespace Carmageddon
             }
             else
             {
+                _playerGrid.CarPlacer = new OtherCarPlacer();
                 car = carCreator.CreateCar(CarSize.Medium);
                 previousCar = car;
             }
@@ -462,6 +471,7 @@ namespace Carmageddon
             }
             else
             {
+                _playerGrid.CarPlacer = new OtherCarPlacer();
                 car = carCreator.CreateCar(CarSize.Big);
                 previousCar = car;
             }

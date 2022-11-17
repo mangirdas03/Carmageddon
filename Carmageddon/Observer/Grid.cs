@@ -1,4 +1,7 @@
-﻿namespace Carmageddon.Forms.Observer
+﻿using Carmageddon.Forms.Models;
+using Carmageddon.Forms.TemplateMethod;
+
+namespace Carmageddon.Forms.Observer
 {
     // SUBJECT / PUBLISHER
     internal class Grid : IGrid
@@ -8,6 +11,8 @@
 
         List<ICell> cells = new();
 
+        List<Car> Cars = new List<Car>();
+        public CarPlacer CarPlacer { get; set; }
         public string State { get; set; }
 
         public Grid(Form2 form2)
@@ -30,6 +35,18 @@
             {
                 cell.CheckIfHit();
             }
+        }
+
+        public bool AddCar(Car car)
+        {
+            // if true add to list
+            if (CarPlacer.TemplateMethod(car, Cars))
+            {
+                Cars.Add(car);
+                return true;
+            }
+
+            return false;
         }
     }
 }
