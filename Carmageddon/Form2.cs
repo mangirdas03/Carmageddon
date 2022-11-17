@@ -23,6 +23,9 @@ using static Carmageddon.Forms.Models.Car;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using Carmageddon.Forms.Bridge__Shooting_;
 using Carmageddon.Forms.TemplateMethod;
+using System.Runtime.InteropServices;
+using System.Diagnostics.Tracing;
+using Carmageddon.Forms.Interpreter;
 
 namespace Carmageddon
 {
@@ -47,8 +50,14 @@ namespace Carmageddon
         private Cannon? cannon = null;
         private AbstractShootingHandler shootingHandler;
 
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool AllocConsole();
+
         public Form2(HubConnection conn, Player player)
         {
+            AllocConsole();
             IConsoleLogger logger = new ConsoleLoggerAdapter();
             logger.LogMessage("Player " + player.Username + " has logged in", false);
             _enemyGrid = new Grid(this);
@@ -63,6 +72,51 @@ namespace Carmageddon
             comboBox1.Items.Add("Battle duration");
             comboBox1.Items.Add("Player names");
             comboBox1.Items.Add("Total shots");
+
+            ThreadPool.QueueUserWorkItem(HandleConsole, SynchronizationContext.Current);
+        }
+
+        void HandleConsole(object state)
+        {
+            var context = (SynchronizationContext)state;
+            Console.WriteLine("Console starting...\n\n");
+
+            while (true)
+            {
+                Console.WriteLine("Type in your desired command [shoot | car count]:\n");
+                var userInput = Console.ReadLine();
+
+                switch (userInput)
+                {
+                    case "car count":
+                        var interpreterContext1 = new InterpreterContext { Parameter3 = _playerGrid.Cars.Count };
+                        new CarCountExpression().Interpret(interpreterContext1, context, this);
+                        break;
+                    case "shoot":
+                        Console.WriteLine("\nEnter X coordinates:");
+                        char coordsX = char.ToUpper(Console.ReadKey().KeyChar);
+                        if(coordsX < 'A' || coordsX > 'Z')
+                        {
+                            break;
+                        }
+                        Console.WriteLine("\nEnter Y coordinates:");
+                        char coordsY = Console.ReadKey().KeyChar;
+                        if (coordsY < '1' || coordsY > '9')
+                        {
+                            break;
+                        }
+                        var interpreterContext2 = new InterpreterContext { Parameter1 = coordsX, Parameter2 = coordsY };
+                        new ShootExpression().Interpret(interpreterContext2, context, this);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        public void ConsoleShoot(object state)
+        {
+            pictureBox2_Click(new object(), state as MouseEventArgs);
         }
 
         private async Task GetPlayerCount(HubConnection conn, Player player)

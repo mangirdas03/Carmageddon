@@ -11,7 +11,7 @@ namespace Carmageddon.Forms.Observer
 
         List<ICell> cells = new();
 
-        List<Car> Cars = new List<Car>();
+        public List<Car> Cars = new List<Car>();
         public CarPlacer CarPlacer { get; set; }
         public string State { get; set; }
 
