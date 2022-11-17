@@ -629,6 +629,10 @@ namespace Carmageddon
             //}
 
             Image previous = invoker.Undo();
+            if(_playerGrid.Cars.Count != 0)
+            {
+                _playerGrid.Cars.RemoveAt(_playerGrid.Cars.Count - 1);
+            }
             if (previous != null)
             {
                 pictureBox1.Image = previous;
