@@ -14,7 +14,7 @@ namespace Carmageddon.Forms.TemplateMethod
             var isValid = true;
             foreach (var item in car.Coordinates)
             {
-                if (item.CoordX > 500 || item.CoordX < 0 || item.CoordY > 500 || item.CoordY < 0)
+                if (item.CoordX > 450 || item.CoordX < 0 || item.CoordY > 450 || item.CoordY < 0)
                 {
                     isValid = false;
                     break;
