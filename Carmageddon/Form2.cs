@@ -1,4 +1,3 @@
-using Carmageddon.Forms;
 using Carmageddon.Forms.AbstractFactory;
 using Carmageddon.Forms.Adapter;
 using Carmageddon.Forms.Facade;
@@ -8,24 +7,13 @@ using Carmageddon.Forms.Models;
 using Carmageddon.Forms.Observer;
 using Microsoft.AspNetCore.SignalR.Client;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using static Carmageddon.Forms.Models.Car;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using Carmageddon.Forms.Bridge__Shooting_;
 using Carmageddon.Forms.TemplateMethod;
 using System.Runtime.InteropServices;
-using System.Diagnostics.Tracing;
 using Carmageddon.Forms.Interpreter;
+using Carmageddon.Forms.ChainOfResp;
 
 namespace Carmageddon
 {
@@ -49,7 +37,10 @@ namespace Carmageddon
         private MachineGun? machinegun = null;
         private Cannon? cannon = null;
         private AbstractShootingHandler shootingHandler;
-
+        private readonly ShotEventHandler _topLeftHandler = new TopLeftEventHandler();
+        private readonly ShotEventHandler _topRightHandler = new TopRightEventHandler();
+        private readonly ShotEventHandler _bottomLeftHandler = new BottomLeftEventHandler();
+        private readonly ShotEventHandler _bottomRightHandler = new BottomRightEventHandler();
 
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -66,7 +57,7 @@ namespace Carmageddon
             _player = player;
             InitializeComponent();
             shootingHandler = new RefinedShootingHandler();
-
+            SetupBonuses();
             comboBox1.Text = "--Select stats--";
             comboBox1.Items.Add("Player count");
             comboBox1.Items.Add("Battle duration");
@@ -75,6 +66,30 @@ namespace Carmageddon
 
             ThreadPool.QueueUserWorkItem(HandleConsole, SynchronizationContext.Current);
         }
+
+        void SetupBonuses()
+        {
+            var rnd = new Random();
+            var bonuses = new List<(int, int)> { (-1, -1), (0, -1), (1, -1), (1, 1), (0, 1), (1, 0)};
+
+            var index = rnd.Next(5);
+            TopLeftEventHandler.ShotBonus = bonuses[index];
+            bonuses.RemoveAt(index);
+            index = rnd.Next(4);
+            TopRightEventHandler.ShotBonus = bonuses[index];
+            bonuses.RemoveAt(index);
+            index = rnd.Next(3);
+            BottomLeftEventHandler.ShotBonus = bonuses[index];
+            bonuses.RemoveAt(index);
+            index = rnd.Next(2);
+            BottomRightEventHandler.ShotBonus = bonuses[index];
+            bonuses.RemoveAt(index);
+
+            _topLeftHandler.SetSuccessor(_topRightHandler)
+                .SetSuccessor(_bottomLeftHandler)
+                .SetSuccessor(_bottomRightHandler);
+        }
+
 
         void HandleConsole(object state)
         {
@@ -663,7 +678,7 @@ namespace Carmageddon
 
         public async Task AddShot(string coords, int coordX, int coordY)
         {
-            var icon = await shootingHandler.HandleShot(coordX, coordY, _player.Username); 
+            var icon = await shootingHandler.HandleShot(_topLeftHandler, coordX, coordY, _player.Username); 
             updateShotCount();
 
             Debug.WriteLine("New shot made: " + coords);
@@ -681,6 +696,8 @@ namespace Carmageddon
             Graphics carImage = Graphics.FromImage(background);
             carImage.DrawImage(hitmark, coordX, coordY);
             pictureBox2.Image = background;
+
+
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)

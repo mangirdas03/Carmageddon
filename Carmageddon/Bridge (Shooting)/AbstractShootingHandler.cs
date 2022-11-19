@@ -1,4 +1,5 @@
-﻿using Carmageddon.Forms.Models;
+﻿using Carmageddon.Forms.ChainOfResp;
+using Carmageddon.Forms.Models;
 
 namespace Carmageddon.Forms.Bridge__Shooting_
 {
@@ -6,6 +7,6 @@ namespace Carmageddon.Forms.Bridge__Shooting_
     {
         public Weapon Weapon { get; set; }
 
-        public abstract Task<string> HandleShot(int coordX, int coordY, string username);
+        public abstract Task<string> HandleShot(ShotEventHandler eventHandler, int coordX, int coordY, string username);
     }
 }
