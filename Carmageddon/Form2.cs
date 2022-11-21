@@ -14,6 +14,7 @@ using Carmageddon.Forms.TemplateMethod;
 using System.Runtime.InteropServices;
 using Carmageddon.Forms.Interpreter;
 using Carmageddon.Forms.ChainOfResp;
+using Carmageddon.Forms.Memento;
 
 namespace Carmageddon
 {
@@ -34,13 +35,15 @@ namespace Carmageddon
         private bool display = false;
         private bool displayShots = false;
         private Stopwatch stopWatch = new();
-        private MachineGun? machinegun = null;
+        private MachineGun? machinegun = null ;
         private Cannon? cannon = null;
         private AbstractShootingHandler shootingHandler;
         private readonly ShotEventHandler _topLeftHandler = new TopLeftEventHandler();
         private readonly ShotEventHandler _topRightHandler = new TopRightEventHandler();
         private readonly ShotEventHandler _bottomLeftHandler = new BottomLeftEventHandler();
         private readonly ShotEventHandler _bottomRightHandler = new BottomRightEventHandler();
+        private Originator originator = new Originator();
+        private Caretaker caretaker = new Caretaker();
 
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -734,6 +737,23 @@ namespace Carmageddon
             {
                 label5.Text = message.Substring(0, message.Length / 2) + "\n" + message.Substring(message.Length / 2, message.Length / 2);
             }
+        }
+
+        // TODO: išsaugot ne tik invokeri bet ir kordinates, kad jas atstatyt butu galima, dabar broken atm
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            originator.Invoker = (Invoker) invoker.Clone();
+            caretaker.Memento = originator.SaveMemento();
+            button10.Visible = true;
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            originator.RestoreMemento(caretaker.Memento);
+            invoker = originator.Invoker;
+            button10.Visible = false;
+            pictureBox1.Image = invoker.LastImage();
         }
     }
 }

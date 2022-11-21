@@ -55,6 +55,8 @@
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.label10 = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.button9 = new System.Windows.Forms.Button();
+            this.button10 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -310,6 +312,27 @@
             this.timer1.Interval = 1000;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
+            // button9
+            // 
+            this.button9.Location = new System.Drawing.Point(2, 359);
+            this.button9.Name = "button9";
+            this.button9.Size = new System.Drawing.Size(83, 29);
+            this.button9.TabIndex = 326;
+            this.button9.Text = "Save";
+            this.button9.UseVisualStyleBackColor = true;
+            this.button9.Click += new System.EventHandler(this.button9_Click);
+            // 
+            // button10
+            // 
+            this.button10.Location = new System.Drawing.Point(2, 394);
+            this.button10.Name = "button10";
+            this.button10.Size = new System.Drawing.Size(83, 29);
+            this.button10.TabIndex = 327;
+            this.button10.Text = "Restore";
+            this.button10.UseVisualStyleBackColor = true;
+            this.button10.Visible = false;
+            this.button10.Click += new System.EventHandler(this.button10_Click);
+            // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
@@ -317,6 +340,8 @@
             this.BackColor = System.Drawing.Color.White;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1584, 861);
+            this.Controls.Add(this.button10);
+            this.Controls.Add(this.button9);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.button8);
@@ -389,5 +414,7 @@
         private ComboBox comboBox1;
         private Label label10;
         private System.Windows.Forms.Timer timer1;
+        private Button button9;
+        private Button button10;
     }
 }

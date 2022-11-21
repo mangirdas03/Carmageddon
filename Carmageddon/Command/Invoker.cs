@@ -1,6 +1,7 @@
 ﻿using Carmageddon.Forms.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -36,6 +37,22 @@ namespace Carmageddon.Forms.Command
         public Stack<Car> CarStack()
         {
             return _cars;
+        }
+        public Image LastImage()
+        {
+            return previousImages.Peek();
+        }
+        public object Clone()
+        {
+            return new Invoker(_command)
+            {
+                _command = this._command,
+                receiver = this.receiver,
+                previousImages = new Stack<Image>(new Stack<Image>(previousImages)),
+                _cars = new Stack<Car>(new Stack<Car>(_cars)),
+                count = this.count
+            };
+
         }
     }
 }
