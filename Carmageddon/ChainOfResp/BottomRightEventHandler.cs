@@ -11,6 +11,7 @@ namespace Carmageddon.Forms.ChainOfResp
         {
             if (coordX >= 250 && coordY >= 250)
             {
+                Send(typeof(BottomLeftEventHandler).FullName, ShotBonus, false);
                 if (type == typeof(Cannon))
                 {
                     Debug.WriteLine("Bottom right bonus applied for Cannon: " + ShotBonus.Item1);
@@ -29,5 +30,24 @@ namespace Carmageddon.Forms.ChainOfResp
                 return base.HandleShotEvent(type, coordX, coordY);
             }
         }
+
+        public override void Send(string to, (int, int) message, bool isResponse)
+        {
+            Mediator.Send(GetType().FullName, to, message, isResponse);
+        }
+
+        public override void Receive(string from, (int, int) message, bool isResponse)
+        {
+            (var oldA, var oldB) = ShotBonus;
+
+            ShotBonus = message;
+
+            if (!isResponse)
+            {
+                Send(from, (oldA, oldB), true);
+            }
+        }
+
+
     }
 }

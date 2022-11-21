@@ -57,6 +57,7 @@
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.button9 = new System.Windows.Forms.Button();
             this.button10 = new System.Windows.Forms.Button();
+            this.label11 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -111,7 +112,7 @@
             this.label3.Font = new System.Drawing.Font("Segoe UI", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.label3.Location = new System.Drawing.Point(286, 761);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(356, 46);
+            this.label3.Size = new System.Drawing.Size(283, 37);
             this.label3.TabIndex = 305;
             this.label3.Text = "Your grid cell pressed: ";
             // 
@@ -122,7 +123,7 @@
             this.label4.Font = new System.Drawing.Font("Segoe UI", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.label4.Location = new System.Drawing.Point(1016, 761);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(388, 46);
+            this.label4.Size = new System.Drawing.Size(309, 37);
             this.label4.TabIndex = 306;
             this.label4.Text = "Enemy grid cell pressed: ";
             // 
@@ -333,6 +334,17 @@
             this.button10.Visible = false;
             this.button10.Click += new System.EventHandler(this.button10_Click);
             // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.BackColor = System.Drawing.Color.Transparent;
+            this.label11.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.label11.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label11.Location = new System.Drawing.Point(1016, 692);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(0, 32);
+            this.label11.TabIndex = 328;
+            // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
@@ -340,6 +352,7 @@
             this.BackColor = System.Drawing.Color.White;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1584, 861);
+            this.Controls.Add(this.label11);
             this.Controls.Add(this.button10);
             this.Controls.Add(this.button9);
             this.Controls.Add(this.label10);
@@ -416,5 +429,6 @@
         private System.Windows.Forms.Timer timer1;
         private Button button9;
         private Button button10;
+        private Label label11;
     }
 }
