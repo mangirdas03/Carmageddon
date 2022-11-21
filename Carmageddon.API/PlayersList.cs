@@ -1,4 +1,5 @@
-﻿using Carmageddon.API.Models;
+﻿using Carmageddon.API.Iterator;
+using Carmageddon.API.Models;
 
 namespace Carmageddon.API
 {
@@ -43,12 +44,19 @@ namespace Carmageddon.API
             {
                 return;
             }
-            foreach (var user in _players)
+
+            var playerAggregate = new GameObjAggregate();
+            playerAggregate.ListToAggregate(_players);
+            var iterator = playerAggregate.CreateIterator();
+
+            var user = (Player)iterator.First();
+            while(user != null)
             {
                 if(user.Username == player.Username)
                 {
                     user.Cars = cars;
                 }
+                user = (Player)iterator.Next();
             }
         }
     }

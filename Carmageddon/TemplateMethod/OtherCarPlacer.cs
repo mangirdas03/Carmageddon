@@ -1,4 +1,5 @@
-﻿using Carmageddon.Forms.Models;
+﻿using Carmageddon.Forms.Iterator;
+using Carmageddon.Forms.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,21 +29,40 @@ namespace Carmageddon.Forms.TemplateMethod
         {
             var isValid = true;
 
-            foreach (var placedCar in cars)
+            if (cars.Count == 0)
             {
-                foreach (var coords in car.Coordinates)
+                return isValid;
+            }
+
+            var carAggregate = new GameObjAggregate();
+            carAggregate.ListToAggregate(cars);
+            var carIterator = carAggregate.CreateIterator();
+
+            var placedCar = (Car)carIterator.First();
+
+            while (placedCar != null)
+            {
+                var coordsAggregate = new GameObjAggregate();
+                coordsAggregate.ListToAggregate(car.Coordinates.ToList());
+                var coordsIterator = coordsAggregate.CreateIterator();
+
+                var coord = (CarPart)coordsIterator.First();
+                while (coord != null)
                 {
-                    if (placedCar.Coordinates.Any(x => x.CoordX == coords.CoordX && x.CoordY == coords.CoordY))
+                    if (placedCar.Coordinates.Any(x => x.CoordX == coord.CoordX && x.CoordY == coord.CoordY))
                     {
                         isValid = false;
                         break;
                     }
+                    coord = (CarPart)coordsIterator.Next();
                 }
 
                 if (!isValid)
                 {
                     break;
                 }
+
+                placedCar = (Car)carIterator.Next();
             }
 
             return isValid;
