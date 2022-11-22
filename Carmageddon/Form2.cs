@@ -744,6 +744,9 @@ namespace Carmageddon
         private void button9_Click(object sender, EventArgs e)
         {
             originator.Invoker = (Invoker) invoker.Clone();
+            originator.Image = new Bitmap(pictureBox1.Image);
+            originator.CarGrid = (Grid)_playerGrid.Clone();
+
             caretaker.Memento = originator.SaveMemento();
             button10.Visible = true;
         }
@@ -752,8 +755,9 @@ namespace Carmageddon
         {
             originator.RestoreMemento(caretaker.Memento);
             invoker = originator.Invoker;
+            pictureBox1.Image = originator.Image;
+            _playerGrid = originator.CarGrid;
             button10.Visible = false;
-            pictureBox1.Image = invoker.LastImage();
         }
     }
 }

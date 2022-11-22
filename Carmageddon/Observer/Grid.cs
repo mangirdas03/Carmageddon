@@ -4,7 +4,7 @@ using Carmageddon.Forms.TemplateMethod;
 namespace Carmageddon.Forms.Observer
 {
     // SUBJECT / PUBLISHER
-    internal class Grid : IGrid
+    public class Grid : IGrid
     {
         private readonly string[] axisXCoords = 
             { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J"};
@@ -26,6 +26,7 @@ namespace Carmageddon.Forms.Observer
                 }
             }
         }
+        public Grid() { }
 
         // notify all
         public void CheckCell(string coords)
@@ -48,5 +49,17 @@ namespace Carmageddon.Forms.Observer
 
             return false;
         }
+        public object Clone()
+        {
+            return new Grid()
+            {
+                cells = this.cells,
+                Cars = new List<Car>(this.Cars),
+                CarPlacer = this.CarPlacer,
+                State = this.State
+            };
+
+        }
+
     }
 }
