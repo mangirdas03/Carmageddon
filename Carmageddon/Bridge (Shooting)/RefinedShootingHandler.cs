@@ -4,7 +4,7 @@ namespace Carmageddon.Forms.Bridge__Shooting_
 {
     public class RefinedShootingHandler : AbstractShootingHandler
     {
-        public async override Task<string> HandleShot(ShotEventHandler eventHandler, int coordX, int coordY, string username)
+        public async override Task<(string, int)> HandleShot(ShotEventHandler eventHandler, int coordX, int coordY, string username)
         {
             (bool hit, Type type) = await Weapon.Shoot(coordX, coordY, username);
 
@@ -13,10 +13,10 @@ namespace Carmageddon.Forms.Bridge__Shooting_
 
             if (hit)
             {
-                return type.Name + "hit";
+                return (type.Name + "hit",bonus);
             }
 
-            return type.Name;
+            return (type.Name,bonus);
         }
     }
 }

@@ -15,6 +15,7 @@ using System.Runtime.InteropServices;
 using Carmageddon.Forms.Interpreter;
 using Carmageddon.Forms.ChainOfResp;
 using Carmageddon.Forms.Memento;
+using Carmageddon.Forms.ChainOfResp.Mediator;
 
 namespace Carmageddon
 {
@@ -42,6 +43,7 @@ namespace Carmageddon
         private readonly ShotEventHandler _topRightHandler = new TopRightEventHandler();
         private readonly ShotEventHandler _bottomLeftHandler = new BottomLeftEventHandler();
         private readonly ShotEventHandler _bottomRightHandler = new BottomRightEventHandler();
+        private readonly AbstractGridMediator _gridMediator = new GridMediator();
         private Originator originator = new Originator();
         private Caretaker caretaker = new Caretaker();
 
@@ -73,26 +75,30 @@ namespace Carmageddon
         void SetupBonuses()
         {
             var rnd = new Random();
-            var bonuses = new List<(int, int)> { (-1, -1), (0, -1), (1, -1), (1, 1), (0, 1), (1, 0)};
+            var bonuses = new List<(int, int)> { (-1, -1), (0, -1), (1, -1), (1, 1), (0, 1), (1, 0), (0, 0)};
 
-            var index = rnd.Next(5);
+            var index = rnd.Next(6);
             TopLeftEventHandler.ShotBonus = bonuses[index];
             bonuses.RemoveAt(index);
-            index = rnd.Next(4);
+            index = rnd.Next(5);
             TopRightEventHandler.ShotBonus = bonuses[index];
             bonuses.RemoveAt(index);
-            index = rnd.Next(3);
+            index = rnd.Next(4);
             BottomLeftEventHandler.ShotBonus = bonuses[index];
             bonuses.RemoveAt(index);
-            index = rnd.Next(2);
+            index = rnd.Next(3);
             BottomRightEventHandler.ShotBonus = bonuses[index];
             bonuses.RemoveAt(index);
 
             _topLeftHandler.SetSuccessor(_topRightHandler)
                 .SetSuccessor(_bottomLeftHandler)
                 .SetSuccessor(_bottomRightHandler);
-        }
 
+            _gridMediator.Register(_topLeftHandler);
+            _gridMediator.Register(_topRightHandler);
+            _gridMediator.Register(_bottomLeftHandler);
+            _gridMediator.Register(_bottomRightHandler);
+        }
 
         void HandleConsole(object state)
         {
@@ -458,7 +464,7 @@ namespace Carmageddon
             Debug.WriteLine("Enemy grid cell pressed: " + cellPressed);
 
             if(shootingHandler.Weapon != null && 
-               shootingHandler.Weapon.ShotsLeft != 0)
+               shootingHandler.Weapon.ShotsLeft > 0)
             {
                 _enemyGrid.CheckCell(cellPressed);
 
@@ -581,11 +587,11 @@ namespace Carmageddon
         {
             if(shootingHandler.Weapon is MachineGun)
             {
-                label9.Text = "MG selected:\r\nShots left - " + shootingHandler.Weapon.ShotsLeft;
+                label9.Text = "MG selected:\r\nShots left - " + (shootingHandler.Weapon.ShotsLeft < 0 ? 0 : shootingHandler.Weapon.ShotsLeft);
             }
             else if(shootingHandler.Weapon is Cannon)
             {
-                label9.Text = "Cannon selected:\r\nShots left - " + shootingHandler.Weapon.ShotsLeft;
+                label9.Text = "Cannon selected:\r\nShots left - " + (shootingHandler.Weapon.ShotsLeft < 0 ? 0 : shootingHandler.Weapon.ShotsLeft);
             }
         }
 
@@ -681,8 +687,9 @@ namespace Carmageddon
 
         public async Task AddShot(string coords, int coordX, int coordY)
         {
-            var icon = await shootingHandler.HandleShot(_topLeftHandler, coordX, coordY, _player.Username); 
+            var shotInfo = await shootingHandler.HandleShot(_topLeftHandler, coordX, coordY, _player.Username); 
             updateShotCount();
+            DisplayBonus(shotInfo.Item2);
 
             Debug.WriteLine("New shot made: " + coords);
             Image background;
@@ -690,7 +697,7 @@ namespace Carmageddon
             {
                 background = new Bitmap(bmpTemp);
             }
-            string imgPath = Directory.GetCurrentDirectory() + $"\\Resources\\{icon}.png";
+            string imgPath = Directory.GetCurrentDirectory() + $"\\Resources\\{shotInfo.Item1}.png";
             Image hitmark;
             using (var bmpTemp = new Bitmap(imgPath))
             {
@@ -701,6 +708,29 @@ namespace Carmageddon
             pictureBox2.Image = background;
 
 
+        }
+
+        private void DisplayBonus(int bonus)
+        {
+            switch (bonus)
+            {
+                case 0:
+                    label11.Text = "No bonus applied! Maybe next shot?";
+                    label11.ForeColor = Color.Black;
+                    break;
+                case < 0:
+                    label11.Text = "Unlucky shot! Better luck next time!";
+                    label11.ForeColor = Color.Red;
+                    break;
+                case > 0:
+                    label11.Text = "Lucky shot! Nice!";
+                    label11.ForeColor = Color.Green;
+                    break;
+                default:
+                    label11.Text = "";
+                    label11.ForeColor = Color.Transparent;
+                    break;
+            }
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
