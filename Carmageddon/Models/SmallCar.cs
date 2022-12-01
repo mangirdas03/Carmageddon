@@ -1,4 +1,6 @@
-﻿namespace Carmageddon.Forms.Models
+﻿using Carmageddon.Forms.Visitor;
+
+namespace Carmageddon.Forms.Models
 {
     public class SmallCar : Car
     {
@@ -12,6 +14,11 @@
         public SmallCar()
         {
 
+        }
+
+        public override void AcceptVisitor(PrintingVisitor visitor)
+        {
+            visitor.PrintCarInfo(this);
         }
     }
 }

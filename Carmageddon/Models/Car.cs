@@ -1,4 +1,5 @@
 ﻿using Carmageddon.Forms.Prototype;
+using Carmageddon.Forms.Visitor;
 
 namespace Carmageddon.Forms.Models
 {
@@ -15,6 +16,8 @@ namespace Carmageddon.Forms.Models
         public int Length { get; set; }
         public string Image { get; set; }
         public CarPart[] Coordinates { get; set; }
+
+        public abstract void AcceptVisitor(PrintingVisitor visitor);
 
         public (int, int, string) GetInfo()
         {

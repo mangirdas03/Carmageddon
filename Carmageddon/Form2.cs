@@ -16,6 +16,7 @@ using Carmageddon.Forms.Interpreter;
 using Carmageddon.Forms.ChainOfResp;
 using Carmageddon.Forms.Memento;
 using Carmageddon.Forms.ChainOfResp.Mediator;
+using Carmageddon.Forms.Visitor;
 
 namespace Carmageddon
 {
@@ -514,6 +515,9 @@ namespace Carmageddon
                 car = carCreator.CreateCar(CarSize.Small);
                 previousCar = car;
             }
+            car.AcceptVisitor(new DebugVisitor());
+            car.AcceptVisitor(new ConsoleVisitor());
+            car.AcceptVisitor(new FileVisitor());
             var message = "Car selected: " + car.Health + " " + car.Length;
             LogMessage(message, true);
             selectedCar = car;
@@ -533,6 +537,9 @@ namespace Carmageddon
                 car = carCreator.CreateCar(CarSize.Medium);
                 previousCar = car;
             }
+            car.AcceptVisitor(new DebugVisitor());
+            car.AcceptVisitor(new ConsoleVisitor());
+            car.AcceptVisitor(new FileVisitor());
             var message = "Car selected: " + car.Health + " " + car.Length;
             LogMessage(message, true);
             selectedCar = car;
@@ -552,6 +559,9 @@ namespace Carmageddon
                 car = carCreator.CreateCar(CarSize.Big);
                 previousCar = car;
             }
+            car.AcceptVisitor(new DebugVisitor());
+            car.AcceptVisitor(new ConsoleVisitor());
+            car.AcceptVisitor(new FileVisitor());
             var message = "Car selected: " + car.Health + " " + car.Length;
             LogMessage(message, false);
             selectedCar = car;
