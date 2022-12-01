@@ -468,7 +468,6 @@ namespace Carmageddon
             {
                 _enemyGrid.CheckCell(cellPressed);
 
-                ////////////////////////////////////////
                 Decision decision = new();
 
                 ClickInput input = new(cellPressed);
@@ -482,7 +481,7 @@ namespace Carmageddon
                     label10.Visible = visibilityFlag;
                     stopWatch.Start();
                 }
-                ///////////////////////////////////////
+
                 GetTotalShots(_conn, true);
             }
         }

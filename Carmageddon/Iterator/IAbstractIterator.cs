@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Carmageddon.Forms.Iterator
+namespace Carmageddon.Forms.IteratorPattern
 {
     public interface IAbstractIterator
     {

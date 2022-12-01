@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Carmageddon.Forms.Proxy;
 
-namespace Carmageddon.Forms.Iterator
+namespace Carmageddon.Forms.IteratorPattern
 {
     public interface IAggregate
     {
-        Iterator CreateIterator();
+        //Iterator CreateIterator();
+        IteratorProxy CreateIterator();
     }
 }
