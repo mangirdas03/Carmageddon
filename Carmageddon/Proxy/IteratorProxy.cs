@@ -6,12 +6,19 @@ namespace Carmageddon.Forms.Proxy
     {
         private static GameObjAggregate _aggregate;
         private Iterator iterator;
+        private object _lock = new object();
 
 
         public IteratorProxy(GameObjAggregate aggregate)
         {
             _aggregate = aggregate;
-            iterator = new Iterator(_aggregate);
+            lock (_lock)
+            {
+                if (iterator == null)
+                {
+                    iterator = new Iterator(aggregate);
+                }
+            }
         }
 
         public object CurrentItem()
