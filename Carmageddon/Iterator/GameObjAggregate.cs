@@ -1,18 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Carmageddon.Forms.Proxy;
 
-namespace Carmageddon.Forms.Iterator
+namespace Carmageddon.Forms.IteratorPattern
 {
     public class GameObjAggregate : IAggregate
     {
         List<object> items = new List<object>();
 
-        public Iterator CreateIterator()
+        //public Iterator CreateIterator()
+        //{
+        //    return new Iterator(this);
+        //}
+
+        public IteratorProxy CreateIterator()
         {
-            return new Iterator(this);
+            return new IteratorProxy(this);
         }
 
         public int Count
