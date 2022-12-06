@@ -13,12 +13,12 @@ namespace Carmageddon.Forms.Composite
 
         public override void Add(Component component)
         {
-            Debug.WriteLine("Label added to leaf");
+            Debug.WriteLine("Cannot add to a leaf");
         }
 
         public override void Remove(Component component)
         {
-            Debug.WriteLine("Label removed from leaf");
+            Debug.WriteLine("Cannot remove from a leaf");
         }
 
         public override void Display()
