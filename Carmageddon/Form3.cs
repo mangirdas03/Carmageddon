@@ -1,4 +1,5 @@
 ﻿using Carmageddon.Forms.Decorator;
+using Carmageddon.Forms.Composite;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -40,7 +41,7 @@ namespace Carmageddon.Forms
             button15.Visible = false;
             button16.Visible = false;
             button17.Visible = false;
-        }
+    }
 
 
         private void pictureBox1_Click(object sender, EventArgs e)
@@ -237,6 +238,12 @@ namespace Carmageddon.Forms
 
         private void button10_Click(object sender, EventArgs e)
         {
+            ButtonComposite _buttonComposite = new ButtonComposite(button10);
+            _buttonComposite.Add(new Leaf(button12));
+            _buttonComposite.Add(new Leaf(button13));
+            _buttonComposite.Add(new Leaf(button14));
+            _buttonComposite.Display();
+
             pictureBox1.Image = null;
             button9.Visible = true;
             button1.Visible = false;
@@ -246,9 +253,6 @@ namespace Carmageddon.Forms
             button5.Visible = false;
             button6.Visible = false;
             button8.Visible = false;
-            button12.Visible = true;
-            button13.Visible = true;
-            button14.Visible = true;
             button10.Visible = false;
             button15.Visible = false;
             button16.Visible = false;
