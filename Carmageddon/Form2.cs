@@ -415,6 +415,28 @@ namespace Carmageddon
             return endMessage;
         }
 
+        private void EndGame()
+        {
+            var thread = new Thread(async () =>
+            {
+                var flag = true;
+                while (flag)
+                {
+                    var message = await CheckForEndGame();
+                    if (message != "")
+                    {
+                        this.Invoke(new MethodInvoker(this.Hide));
+                        var form = new Form4(message);
+                        this.Invoke((MethodInvoker)delegate () {
+                            form.Show();
+                        });
+                        break;
+                    }
+                }
+            });
+            thread.Start();
+        }
+
         private async void pictureBox2_Click(object sender, EventArgs e)
         {
             var message = await CheckForEndGame();
@@ -739,6 +761,7 @@ namespace Carmageddon
             var cars = invoker.CarStack().ToList();
             await SendCarsToApi(cars);
             carsSent = true;
+            EndGame();
             // send cars to backend
         }
 

@@ -72,9 +72,9 @@ namespace Carmageddon.API.Hubs
 
         private string CheckAllCars(string username)
         {
-            var enemyPlayerCars = PlayersList.GetEnemy(username).Cars;
+            var enemyPlayer = PlayersList.GetEnemy(username);
             var playerCars = PlayersList.GetPlayerCars(username);
-            if (enemyPlayerCars == null)
+            if (enemyPlayer == null)
             {
                 return "";
             }
@@ -84,7 +84,12 @@ namespace Carmageddon.API.Hubs
                 return "";
             }
 
-            var enemyDestroyed = CheckAllCarsState(enemyPlayerCars);
+            if(enemyPlayer.Cars == null)
+            {
+                return "";
+            }
+
+            var enemyDestroyed = CheckAllCarsState(enemyPlayer.Cars);
             var playerDestroyed = CheckAllCarsState(playerCars);
 
             if(enemyDestroyed)
