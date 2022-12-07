@@ -112,9 +112,8 @@
             this.label3.Font = new System.Drawing.Font("Segoe UI", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.label3.Location = new System.Drawing.Point(286, 761);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(283, 37);
+            this.label3.Size = new System.Drawing.Size(0, 46);
             this.label3.TabIndex = 305;
-            this.label3.Text = "Your grid cell pressed: ";
             // 
             // label4
             // 
@@ -123,7 +122,7 @@
             this.label4.Font = new System.Drawing.Font("Segoe UI", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.label4.Location = new System.Drawing.Point(1016, 761);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(309, 37);
+            this.label4.Size = new System.Drawing.Size(388, 46);
             this.label4.TabIndex = 306;
             this.label4.Text = "Enemy grid cell pressed: ";
             // 
@@ -342,7 +341,7 @@
             this.label11.ForeColor = System.Drawing.SystemColors.ControlText;
             this.label11.Location = new System.Drawing.Point(1016, 692);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(0, 32);
+            this.label11.Size = new System.Drawing.Size(0, 41);
             this.label11.TabIndex = 328;
             // 
             // Form2

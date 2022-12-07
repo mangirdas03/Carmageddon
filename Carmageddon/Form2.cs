@@ -17,6 +17,7 @@ using Carmageddon.Forms.ChainOfResp;
 using Carmageddon.Forms.Memento;
 using Carmageddon.Forms.ChainOfResp.Mediator;
 using Carmageddon.Forms.Visitor;
+using Carmageddon.Forms;
 
 namespace Carmageddon
 {
@@ -36,6 +37,7 @@ namespace Carmageddon
         private bool stop = false;
         private bool display = false;
         private bool displayShots = false;
+        private bool carsSent = false;
         private Stopwatch stopWatch = new();
         private MachineGun? machinegun = null ;
         private Cannon? cannon = null;
@@ -47,6 +49,7 @@ namespace Carmageddon
         private readonly AbstractGridMediator _gridMediator = new GridMediator();
         private Originator originator = new Originator();
         private Caretaker caretaker = new Caretaker();
+        private HubConnection _battleHub = new BattleHub().GetInstance();
 
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -223,7 +226,7 @@ namespace Carmageddon
         }
 
 
-        private void pictureBox1_Click(object sender, EventArgs e)
+        private async void pictureBox1_Click(object sender, EventArgs e)
         {
             var mouseEventArgs = e as MouseEventArgs;
             var coordX = mouseEventArgs.X;
@@ -357,11 +360,34 @@ namespace Carmageddon
                     label5.Text = "";
                 }
             }
-
-            label3.Text = "Your grid cell pressed: " + cellPressed;
-            Debug.WriteLine("Your grid cell pressed: " + cellPressed);
+            else if (carsSent)
+            {
+                var state = await CheckCarState(coordX, coordY);
+                if(state != string.Empty)
+                {
+                    label3.Text = "Car state is: " + state;
+                }
+                else
+                {
+                    label3.Text = state;
+                }
+            }
+            
+            //label3.Text = "Your grid cell pressed: " + cellPressed;
+            //Debug.WriteLine("Your grid cell pressed: " + cellPressed);
         }
 
+
+        private async Task<string> CheckCarState(int coordX, int coordY)
+        {
+            var currState = "";
+            await foreach (var state in _battleHub.StreamAsync<string>("CheckCarState", coordX, coordY, _player.Username))
+            {
+                currState = state;
+                break;
+            }
+            return currState;
+        }
 
         private void getCarCoordinates(int coordX, int coordY)
         {
@@ -378,112 +404,133 @@ namespace Carmageddon
             }
         }
 
-        private void pictureBox2_Click(object sender, EventArgs e)
+        private async Task<string> CheckForEndGame()
         {
-            var mouseEventArgs = e as MouseEventArgs;
-            var coordX = mouseEventArgs.X;
-            var coordY = mouseEventArgs.Y;
-            var cellPressed = "";
-
-            //Debug.WriteLine(string.Format("X: {0} Y: {1}", coordX, coordY));
-
-            switch (coordX)
+            var endMessage = "";
+            await foreach (string message in _battleHub.StreamAsync<string>("CheckIfAllCarsDestroyed", _player.Username))
             {
-                case < 50:
-                    cellPressed += "A";
-                    break;
-                case < 100:
-                    cellPressed += "B";
-                    break;
-                case < 150:
-                    cellPressed += "C";
-                    break;
-                case < 200:
-                    cellPressed += "D";
-                    break;
-                case < 250:
-                    cellPressed += "E";
-                    break;
-                case < 300:
-                    cellPressed += "F";
-                    break;
-                case < 350:
-                    cellPressed += "G";
-                    break;
-                case < 400:
-                    cellPressed += "H";
-                    break;
-                case < 450:
-                    cellPressed += "I";
-                    break;
-                case < 501:
-                    cellPressed += "J";
-                    break;
-                default:
-                    cellPressed += "A";
-                    break;
+                endMessage = message;
+                break;
             }
+            return endMessage;
+        }
 
-            switch (coordY)
+        private async void pictureBox2_Click(object sender, EventArgs e)
+        {
+            var message = await CheckForEndGame();
+            if (message == "")
             {
-                case < 50:
-                    cellPressed += "1";
-                    break;
-                case < 100:
-                    cellPressed += "2";
-                    break;
-                case < 150:
-                    cellPressed += "3";
-                    break;
-                case < 200:
-                    cellPressed += "4";
-                    break;
-                case < 250:
-                    cellPressed += "5";
-                    break;
-                case < 300:
-                    cellPressed += "6";
-                    break;
-                case < 350:
-                    cellPressed += "7";
-                    break;
-                case < 400:
-                    cellPressed += "8";
-                    break;
-                case < 450:
-                    cellPressed += "9";
-                    break;
-                case < 501:
-                    cellPressed += "10";
-                    break;
-                default:
-                    cellPressed += "1";
-                    break;
-            }
+                var mouseEventArgs = e as MouseEventArgs;
+                var coordX = mouseEventArgs.X;
+                var coordY = mouseEventArgs.Y;
+                var cellPressed = "";
 
-            label4.Text = "Enemy grid cell pressed: " + cellPressed;
-            Debug.WriteLine("Enemy grid cell pressed: " + cellPressed);
+                //Debug.WriteLine(string.Format("X: {0} Y: {1}", coordX, coordY));
 
-            if(shootingHandler.Weapon != null && 
-               shootingHandler.Weapon.ShotsLeft > 0)
-            {
-                _enemyGrid.CheckCell(cellPressed);
-
-                Decision decision = new();
-
-                ClickInput input = new(cellPressed);
-
-                bool shouldReset = decision.ShouldReset(input, label10.Visible).Item1;
-                bool visibilityFlag = decision.ShouldReset(input, label10.Visible).Item2;
-
-                if (shouldReset)
+                switch (coordX)
                 {
-                    stopWatch.Reset();
-                    label10.Visible = visibilityFlag;
-                    stopWatch.Start();
+                    case < 50:
+                        cellPressed += "A";
+                        break;
+                    case < 100:
+                        cellPressed += "B";
+                        break;
+                    case < 150:
+                        cellPressed += "C";
+                        break;
+                    case < 200:
+                        cellPressed += "D";
+                        break;
+                    case < 250:
+                        cellPressed += "E";
+                        break;
+                    case < 300:
+                        cellPressed += "F";
+                        break;
+                    case < 350:
+                        cellPressed += "G";
+                        break;
+                    case < 400:
+                        cellPressed += "H";
+                        break;
+                    case < 450:
+                        cellPressed += "I";
+                        break;
+                    case < 501:
+                        cellPressed += "J";
+                        break;
+                    default:
+                        cellPressed += "A";
+                        break;
                 }
 
-                GetTotalShots(_conn, true);
+                switch (coordY)
+                {
+                    case < 50:
+                        cellPressed += "1";
+                        break;
+                    case < 100:
+                        cellPressed += "2";
+                        break;
+                    case < 150:
+                        cellPressed += "3";
+                        break;
+                    case < 200:
+                        cellPressed += "4";
+                        break;
+                    case < 250:
+                        cellPressed += "5";
+                        break;
+                    case < 300:
+                        cellPressed += "6";
+                        break;
+                    case < 350:
+                        cellPressed += "7";
+                        break;
+                    case < 400:
+                        cellPressed += "8";
+                        break;
+                    case < 450:
+                        cellPressed += "9";
+                        break;
+                    case < 501:
+                        cellPressed += "10";
+                        break;
+                    default:
+                        cellPressed += "1";
+                        break;
+                }
+
+                label4.Text = "Enemy grid cell pressed: " + cellPressed;
+                Debug.WriteLine("Enemy grid cell pressed: " + cellPressed);
+
+                if (shootingHandler.Weapon != null &&
+                   shootingHandler.Weapon.ShotsLeft > 0)
+                {
+                    _enemyGrid.CheckCell(cellPressed);
+
+                    Decision decision = new();
+
+                    ClickInput input = new(cellPressed);
+
+                    bool shouldReset = decision.ShouldReset(input, label10.Visible).Item1;
+                    bool visibilityFlag = decision.ShouldReset(input, label10.Visible).Item2;
+
+                    if (shouldReset)
+                    {
+                        stopWatch.Reset();
+                        label10.Visible = visibilityFlag;
+                        stopWatch.Start();
+                    }
+
+                    GetTotalShots(_conn, true);
+                }
+            }
+            else
+            {
+                this.Hide();
+                var form = new Form4(message);
+                form.Show();
             }
         }
 
@@ -691,6 +738,7 @@ namespace Carmageddon
             //var cars = _cars.ToList();
             var cars = invoker.CarStack().ToList();
             await SendCarsToApi(cars);
+            carsSent = true;
             // send cars to backend
         }
 

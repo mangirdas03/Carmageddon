@@ -1,4 +1,6 @@
-﻿namespace Carmageddon.API.Models
+﻿using Carmageddon.API.State;
+
+namespace Carmageddon.API.Models
 {
     public class BigCar : Car
     {
@@ -8,6 +10,7 @@
             this.Length = length;
             this.Image = image;
             this.Coordinates = new CarPart[length];
+            this.Context = new StateContext(new Healthy());
         }
     }
 }
