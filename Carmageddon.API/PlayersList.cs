@@ -23,6 +23,11 @@ namespace Carmageddon.API
             return _players.FirstOrDefault(x => x.Username != username);
         }
 
+        public static List<Car> GetPlayerCars(string username)
+        {
+            return _players.FirstOrDefault(x => x.Username == username).Cars;
+        }
+
         public static int GetCount()
         {
             return _players.Count;

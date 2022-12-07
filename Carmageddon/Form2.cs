@@ -357,11 +357,16 @@ namespace Carmageddon
                     label5.Text = "";
                 }
             }
-
+            
             label3.Text = "Your grid cell pressed: " + cellPressed;
             Debug.WriteLine("Your grid cell pressed: " + cellPressed);
         }
 
+
+        private void CheckCarState(int coordX, int coordY)
+        {
+            
+        }
 
         private void getCarCoordinates(int coordX, int coordY)
         {
