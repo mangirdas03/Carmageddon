@@ -9,7 +9,7 @@ namespace Carmageddon.API.State
 {
     public class Destroyed : CarState
     {
-        public override void HandleStateChange(StateContext context)
+        public override void HandleStateChange(StateContext context, int health)
         {
             context.CarState = null;
         }

@@ -7,7 +7,7 @@ namespace Carmageddon.API.Models
         public int Health { get; set; }
         public int Length { get; set; }
         public string Image { get; set; }
-        public StateContext Context { get; set; }
+        public StateContext Context = new StateContext(new Healthy());
         public CarPart[] Coordinates { get; set; }
     }
 }

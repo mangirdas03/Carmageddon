@@ -9,9 +9,16 @@ namespace Carmageddon.API.State
 {
     public class Healthy : CarState
     {
-        public override void HandleStateChange(StateContext context)
+        public override void HandleStateChange(StateContext context, int health)
         {
-            context.CarState = new Damaged();
+            if (health == 0)
+            {
+                context.CarState = new Destroyed();
+            }
+            else
+            {
+                context.CarState = new Damaged();
+            }
         }
     }
 }

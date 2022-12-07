@@ -25,9 +25,9 @@ namespace Carmageddon.API.State
             }
         }
 
-        public void ChangeState()
+        public void ChangeState(int health)
         {
-            state.HandleStateChange(this);
+            state.HandleStateChange(this, health);
         }
     }
 }

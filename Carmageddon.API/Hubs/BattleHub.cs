@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using Carmageddon.API.Models;
+using Microsoft.AspNetCore.SignalR;
 using System.Runtime.CompilerServices;
 
 namespace Carmageddon.API.Hubs
@@ -20,15 +21,16 @@ namespace Carmageddon.API.Hubs
             await Task.Delay(1000, cancellationToken);
         }
 
-        public async IAsyncEnumerable<bool> CheckIfAllCarsDestroyed([EnumeratorCancellation] CancellationToken cancellationToken, string username)
+        public async IAsyncEnumerable<string> CheckIfAllCarsDestroyed([EnumeratorCancellation] CancellationToken cancellationToken, string username)
         {
             if (username == null)
             {
-                yield return false;
+                yield return "";
             }
             else
             {
-                yield return CheckAllCars(username);
+                var message = CheckAllCars(username);
+                yield return message;
             }
 
             await Task.Delay(1000, cancellationToken);
@@ -68,15 +70,38 @@ namespace Carmageddon.API.Hubs
             await Task.Delay(1000, cancellationToken);
         }
 
-        private bool CheckAllCars(string username)
+        private string CheckAllCars(string username)
         {
-            var enemyPlayer = PlayersList.GetEnemy(username);
-            if (enemyPlayer == null)
+            var enemyPlayerCars = PlayersList.GetEnemy(username).Cars;
+            var playerCars = PlayersList.GetPlayerCars(username);
+            if (enemyPlayerCars == null)
             {
-                return true;
+                return "";
             }
 
-            foreach (var car in enemyPlayer.Cars)
+            if (playerCars == null)
+            {
+                return "";
+            }
+
+            var enemyDestroyed = CheckAllCarsState(enemyPlayerCars);
+            var playerDestroyed = CheckAllCarsState(playerCars);
+
+            if(enemyDestroyed)
+            {
+                return "You won!";
+            }
+            if (playerDestroyed)
+            {
+                return "Opponent won!";
+            }
+
+            return "";
+        }
+
+        private bool CheckAllCarsState(List<Car> cars)
+        {
+            foreach (var car in cars)
             {
                 foreach (var coord in car.Coordinates)
                 {
@@ -86,7 +111,6 @@ namespace Carmageddon.API.Hubs
                     }
                 }
             }
-
             return true;
         }
 
@@ -107,7 +131,7 @@ namespace Carmageddon.API.Hubs
                     if(coord.CoordX == coordX && coord.CoordY == coordY && !coord.IsDestroyed)
                     {
                         car.Health--;
-                        car.Context.ChangeState();
+                        car.Context.ChangeState(car.Health);
                         coord.IsDestroyed = true;
                         return true;
                     }

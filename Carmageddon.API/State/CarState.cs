@@ -8,6 +8,6 @@ namespace Carmageddon.API.State
 {
     public abstract class CarState
     {
-        public abstract void HandleStateChange();
+        public abstract void HandleStateChange(StateContext context, int health);
     }
 }
