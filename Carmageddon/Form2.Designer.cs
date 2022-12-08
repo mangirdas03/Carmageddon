@@ -200,6 +200,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
+            this.label5.BackColor = System.Drawing.Color.Transparent;
             this.label5.Location = new System.Drawing.Point(119, 735);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(0, 20);
@@ -348,6 +349,7 @@
             // label12
             // 
             this.label12.AutoSize = true;
+            this.label12.BackColor = System.Drawing.Color.Transparent;
             this.label12.Location = new System.Drawing.Point(455, 73);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(0, 20);

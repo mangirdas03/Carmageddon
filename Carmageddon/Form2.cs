@@ -76,6 +76,7 @@ namespace Carmageddon
             comboBox1.Items.Add("Total shots");
 
             ThreadPool.QueueUserWorkItem(HandleConsole, SynchronizationContext.Current);
+            GetPlayerCount(_conn, _player);
             button8.Visible = false;
         }
 
