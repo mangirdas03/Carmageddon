@@ -17,10 +17,18 @@ namespace Carmageddon.API
             _players.Add(player);
         }
 
+        public static List<Player> GetPlayers()
+        {
+            return _players;
+        }
 
         public static Player GetEnemy(string username)
         {
             return _players.FirstOrDefault(x => x.Username != username);
+        }
+        public static Player GetPlayer(string username)
+        {
+            return _players.FirstOrDefault(x => x.Username == username);
         }
 
         public static List<Car> GetPlayerCars(string username)

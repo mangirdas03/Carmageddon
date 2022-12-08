@@ -50,6 +50,8 @@ namespace Carmageddon
         private Originator originator = new Originator();
         private Caretaker caretaker = new Caretaker();
         private HubConnection _battleHub = new BattleHub().GetInstance();
+        private string turnMessage = "";
+        private bool turnMade = false;
 
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -419,8 +421,7 @@ namespace Carmageddon
         {
             var thread = new Thread(async () =>
             {
-                var flag = true;
-                while (flag)
+                while (true)
                 {
                     var message = await CheckForEndGame();
                     if (message != "")
@@ -437,10 +438,41 @@ namespace Carmageddon
             thread.Start();
         }
 
+        private void CheckTurn()
+        {
+            var thread = new Thread(async () =>
+            {
+                while (true)
+                {
+                    var turn = await CheckWhichTurn();
+                    if(turn != "")
+                    {
+                        this.Invoke((MethodInvoker)delegate ()
+                        {
+                            this.label12.Text = turn;
+                        });
+                        turnMessage = turn;
+                        turnMade = false;
+                    }
+                }
+            });
+            thread.Start();
+        }
+
+        private async Task<string> CheckWhichTurn()
+        {
+            var message = "";
+            await foreach (string result in _battleHub.StreamAsync<string>("GetTurn", _player.Username, turnMade))
+            {
+                message = result;
+                break;
+            }
+            return message;
+        }
+
         private async void pictureBox2_Click(object sender, EventArgs e)
         {
-            var message = await CheckForEndGame();
-            if (message == "")
+            if(turnMessage == "Your turn")
             {
                 var mouseEventArgs = e as MouseEventArgs;
                 var coordX = mouseEventArgs.X;
@@ -546,14 +578,13 @@ namespace Carmageddon
                     }
 
                     GetTotalShots(_conn, true);
+                    await foreach (string result in _battleHub.StreamAsync<string>("GetTurn", _player.Username, true))
+                    {
+                        turnMessage = result;
+                        break;
+                    }
                 }
-            }
-            else
-            {
-                this.Hide();
-                var form = new Form4(message);
-                form.Show();
-            }
+            } 
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -762,7 +793,23 @@ namespace Carmageddon
             await SendCarsToApi(cars);
             carsSent = true;
             EndGame();
+            var conf = await ConfirmUser();
+            if (conf)
+            {
+                CheckTurn();
+            }
             // send cars to backend
+        }
+
+        private async Task<bool> ConfirmUser()
+        {
+            var confimed = false;
+            await foreach (bool result in _battleHub.StreamAsync<bool>("ConfirmPlayer", _player.Username))
+            {
+                confimed = result;
+                break;
+            }
+            return confimed;
         }
 
         public async Task AddShot(string coords, int coordX, int coordY)
