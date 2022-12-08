@@ -76,6 +76,7 @@ namespace Carmageddon
             comboBox1.Items.Add("Total shots");
 
             ThreadPool.QueueUserWorkItem(HandleConsole, SynchronizationContext.Current);
+            button8.Visible = false;
         }
 
         void SetupBonuses()
@@ -360,6 +361,7 @@ namespace Carmageddon
                     pictureBox1.Image = background;
                     selectedCar = null;
                     label5.Text = "";
+                    CheckButtonVisibility();
                 }
             }
             else if (carsSent)
@@ -377,6 +379,21 @@ namespace Carmageddon
             
             //label3.Text = "Your grid cell pressed: " + cellPressed;
             //Debug.WriteLine("Your grid cell pressed: " + cellPressed);
+        }
+        private void CheckButtonVisibility()
+        {
+            var carList = invoker.CarStack().ToList();
+            var smallCount = carList.Where(car => car.Health == 1).Count();
+            var mediumCount = carList.Where(car => car.Health == 2).Count();
+            var bigCount = carList.Where(car => car.Health == 3).Count();
+            if(smallCount == 3 && mediumCount == 2 && bigCount == 1)
+                button8.Visible = true;
+            else
+                button8.Visible = false;
+
+            _ = (smallCount == 3) ? button1.Visible = false : button1.Visible = true;
+            _ = (mediumCount == 2) ? button2.Visible = false : button2.Visible = true;
+            _ = (bigCount == 1) ? button3.Visible = false : button3.Visible = true;
         }
 
 
@@ -755,12 +772,6 @@ namespace Carmageddon
 
         private void button6_Click(object sender, EventArgs e)
         {
-            //if (previousImages.Count != 0)
-            //{
-            //    pictureBox1.Image = previousImages.Pop();
-            //    _cars.Pop();
-            //}
-
             Image previous = invoker.Undo();
             if(_playerGrid.Cars.Count != 0)
             {
@@ -770,6 +781,7 @@ namespace Carmageddon
             {
                 pictureBox1.Image = previous;
             }
+            CheckButtonVisibility();
         }
 
         private void button7_Click(object sender, EventArgs e)
@@ -788,6 +800,7 @@ namespace Carmageddon
             button6.Visible = false;
             button7.Visible = false;
             button8.Visible = false;
+            button9.Visible = false;
             //var cars = _cars.ToList();
             var cars = invoker.CarStack().ToList();
             await SendCarsToApi(cars);
@@ -915,6 +928,7 @@ namespace Carmageddon
             pictureBox1.Image = originator.Image;
             _playerGrid = originator.CarGrid;
             button10.Visible = false;
+            CheckButtonVisibility();
         }
     }
 }
